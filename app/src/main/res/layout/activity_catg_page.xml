@@ -24,7 +24,7 @@
             android:layout_marginStart="20dp"
             android:fontFamily="@font/open_sans_light"
             android:text="Select"
-            android:textSize="18sp"
+            android:textSize="16dp"
             android:textColor="#c2000000"
             android:textStyle="bold" />
 
@@ -37,7 +37,7 @@
             android:fontFamily="@font/open_sans"
             android:text="Category"
             android:textColor="#c2000000"
-            android:textSize="30sp"
+            android:textSize="28dp"
             android:textStyle="bold" />
 
         <ImageView

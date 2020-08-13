@@ -11,6 +11,6 @@
         android:fontFamily="@font/open_sans"
         android:padding="7dp"
         android:text="Expn List"
-        android:textSize="14sp" />
+        android:textSize="12dp" />
 
 </LinearLayout>

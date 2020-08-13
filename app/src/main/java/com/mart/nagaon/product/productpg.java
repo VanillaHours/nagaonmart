@@ -77,7 +77,6 @@ public class productpg extends AppCompatActivity {
             subId = getIntent().getStringExtra("SubID");
             catId = getIntent().getStringExtra("CategoryId");
             name = getIntent().getStringExtra("Name");
-            prod_head.setText(name);
         }
         if(subId != null && !subId.isEmpty()){
             sub_rec();
@@ -90,6 +89,7 @@ public class productpg extends AppCompatActivity {
     private void cat_rec() {
         cat_rec.setHasFixedSize(true);
         cat_rec.setLayoutManager(new LinearLayoutManager(this));
+        prod_head.setText("All "+name);
 
         Query query = FirebaseDatabase.getInstance().getReference().child("Products").orderByChild("CatgID").equalTo(catId);
         options = new FirebaseRecyclerOptions.Builder<prodmodel>().setQuery(query,prodmodel.class).build();
@@ -112,6 +112,10 @@ public class productpg extends AppCompatActivity {
                 holder.prodName.setText(""+model.getName());
                 holder.prodPrice.setText("₹"+model.getPrice());
                 holder.prodQuantity.setText(""+model.getQuantity());
+                if(model.getDiscount()==0){
+                    holder.prodDiscount.setVisibility(View.GONE);
+                    holder.prodDisc.setVisibility(View.INVISIBLE);
+                }
                 holder.prodDiscount.setText(model.getDiscount()+"% OFF");
                 Picasso.get().load(model.getImage()).into(holder.prodImage);
                 String s = model.getMRP().toString();
@@ -211,6 +215,7 @@ public class productpg extends AppCompatActivity {
     public void sub_rec(){
         cat_rec.setHasFixedSize(true);
         cat_rec.setLayoutManager(new LinearLayoutManager(this));
+        prod_head.setText(name);
 
         Query query = FirebaseDatabase.getInstance().getReference().child("Products").orderByChild("SubID").equalTo(subId);
         options = new FirebaseRecyclerOptions.Builder<prodmodel>().setQuery(query,prodmodel.class).build();
@@ -235,6 +240,10 @@ public class productpg extends AppCompatActivity {
                 holder.prodPrice.setText("₹"+model.getPrice());
                 holder.prodQuantity.setText(""+model.getQuantity());
                 holder.prodDiscount.setText(model.getDiscount()+"% OFF");
+                if(model.getDiscount()==0){
+                    holder.prodDiscount.setVisibility(View.GONE);
+                    holder.prodDisc.setVisibility(View.INVISIBLE);
+                }
                 Picasso.get().load(model.getImage()).into(holder.prodImage);
                 final String s = model.getMRP().toString();
                 holder.prodDisc.setText("₹"+s);

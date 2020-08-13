@@ -1,28 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="100dp"
     android:layout_height="150dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="10dp"
     app:cardCornerRadius="5dp"
-    app:cardElevation="5dp"
-    android:layout_margin="10dp">
-    
+    app:cardElevation="5dp">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="5dp"
-        android:orientation="vertical">
-        <androidx.cardview.widget.CardView
-            app:cardCornerRadius="5dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <ImageView
-                android:id="@+id/catg_img"
-                android:layout_width="match_parent"
-                android:layout_height="90dp"
-                android:src="@drawable/ic_launcher_background"
-                android:scaleType="centerCrop"/>
-        </androidx.cardview.widget.CardView>
+        android:orientation="vertical"
+        android:padding="5dp">
+
+        <ImageView
+            android:id="@+id/catg_img"
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_launcher_background" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -32,19 +28,19 @@
 
             <TextView
                 android:id="@+id/catg_txt"
-                android:layout_gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:autoSizeTextType="uniform"
                 android:fontFamily="@font/roboto"
                 android:text="CategoryName"
-                android:textAlignment="center"
-                android:autoSizeTextType="uniform"/>
+                android:textAlignment="center" />
 
             <TextView
                 android:id="@+id/catg_desc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="visible"/>
+                android:visibility="visible" />
 
         </LinearLayout>
 

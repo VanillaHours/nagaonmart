@@ -70,7 +70,7 @@ public class cartadapter extends RecyclerView.Adapter<cartViewHolder>{
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final cartViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final cartViewHolder holder, final int position) {
         holder.txtCartQuantity.setText(" ("+listdata.get(position).getQuantity()+")");
         holder.txtCartprice.setText("₹"+listdata.get(position).getPrice());
         holder.txtCartname.setText(listdata.get(position).getProdName());
@@ -80,7 +80,14 @@ public class cartadapter extends RecyclerView.Adapter<cartViewHolder>{
         holder.remove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                new database(context).removeItem(new OrderModel())
+                new database(context).removeItem(new OrderModel(
+                        listdata.get(position).getProdID(),
+                        listdata.get(position).getProdName(),
+                        listdata.get(position).getPrice(),
+                        listdata.get(position).getQuantity(),
+                        listdata.get(position).getCount(),
+                        listdata.get(position).getImage()
+                ));
             }
         });
 

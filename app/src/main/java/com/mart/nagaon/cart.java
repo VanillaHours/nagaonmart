@@ -89,6 +89,7 @@ public class cart extends AppCompatActivity {
 
         cart = new database(this).getCarts();
         adapter = new cartadapter(cart,this);
+//        adapter.notifyDataSetChanged();
         recyclerView.setAdapter(adapter);
 
 
@@ -154,7 +155,7 @@ public class cart extends AppCompatActivity {
         btnPlaceOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                com.mart.nagaon.request request = new request(
+                request request = new request(
                         contact,
                         name,
                         address,

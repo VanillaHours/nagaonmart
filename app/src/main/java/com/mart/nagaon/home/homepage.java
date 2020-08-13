@@ -296,6 +296,7 @@ public class homepage extends AppCompatActivity implements NavigationView.OnNavi
             }
         };
         categoryAdapter.startListening();
+        categoryAdapter.notifyDataSetChanged();
         cat_rec.setAdapter(categoryAdapter);
     }
 

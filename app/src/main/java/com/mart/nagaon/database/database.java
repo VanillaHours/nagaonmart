@@ -65,7 +65,7 @@ public class database extends SQLiteAssetHelper {
 
     public void removeItem(OrderModel order){
         SQLiteDatabase db = getReadableDatabase();
-        String query = String.format("DELETE FROM OrderDetail WHERE ProdID="+order.getProdID().toString());
-        db.execSQL(query);
+        db.delete("OrderDetail","ProdName =? and Price =?", new String[]{order.getProdName(),order.getPrice()});
+
     }
 }

@@ -22,6 +22,8 @@
         android:layout_marginLeft="15dp"
         android:fontFamily="@font/open_sans"
         android:textStyle="bold"
+        android:maxLines="2"
+        android:ellipsize="end"
         android:text="FName LName"
         android:textSize="20dp" />
 

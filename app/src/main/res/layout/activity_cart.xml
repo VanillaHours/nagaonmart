@@ -23,7 +23,7 @@
             android:layout_marginStart="20dp"
             android:layout_marginTop="10dp"
             android:fontFamily="@font/open_sans_light"
-            android:text="Review"
+            android:text="Cart"
             android:textColor="#c2000000"
             android:textSize="18dp"
             android:textStyle="bold" />
@@ -34,7 +34,7 @@
             android:layout_below="@+id/select"
             android:layout_marginStart="20dp"
             android:fontFamily="@font/open_sans"
-            android:text="Order"
+            android:text="Items"
             android:textColor="#c2000000"
             android:textSize="30dp"
             android:textStyle="bold" />

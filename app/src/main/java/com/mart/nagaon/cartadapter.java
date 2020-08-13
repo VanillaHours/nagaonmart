@@ -24,8 +24,8 @@ import java.util.Locale;
 
 class cartViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-    public TextView txtCartname, txtCartprice, txtCartQuantity, txtCartCount, remove;
-    public ImageView img;
+    public TextView txtCartname, txtCartprice, txtCartQuantity, txtCartCount;
+    public ImageView img, remove;
 
     private ItemClickListener itemClickListener;
 
@@ -41,7 +41,7 @@ class cartViewHolder extends RecyclerView.ViewHolder implements View.OnClickList
         txtCartCount = (TextView)itemView.findViewById(R.id.cartCount);
         txtCartQuantity = (TextView)itemView.findViewById(R.id.cartquantity);
         img = (ImageView)itemView.findViewById(R.id.prod_img);
-        remove = (TextView)itemView.findViewById(R.id.remove);
+        remove = (ImageView) itemView.findViewById(R.id.remove);
     }
 
     @Override
@@ -71,7 +71,7 @@ public class cartadapter extends RecyclerView.Adapter<cartViewHolder>{
 
     @Override
     public void onBindViewHolder(@NonNull final cartViewHolder holder, final int position) {
-        holder.txtCartQuantity.setText(" ("+listdata.get(position).getQuantity()+")");
+        holder.txtCartQuantity.setText(" x ("+listdata.get(position).getQuantity()+")");
         holder.txtCartprice.setText("₹"+listdata.get(position).getPrice());
         holder.txtCartname.setText(listdata.get(position).getProdName());
         holder.txtCartCount.setText("Quantity: "+listdata.get(position).getCount());
@@ -88,9 +88,19 @@ public class cartadapter extends RecyclerView.Adapter<cartViewHolder>{
                         listdata.get(position).getCount(),
                         listdata.get(position).getImage()
                 ));
+//                listdata.remove(holder.getAdapterPosition());
+//                notifyDataSetChanged();
+
+                removeAt(holder.getAdapterPosition());
+                Toast.makeText(context,"Removed",Toast.LENGTH_SHORT).show();
             }
         });
+    }
 
+    public void removeAt(int position) {
+        listdata.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, listdata.size());
     }
 
     @Override

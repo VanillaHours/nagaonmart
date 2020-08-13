@@ -48,6 +48,7 @@ public class cart extends AppCompatActivity {
     LinearLayout card2, emptyDialog;
 
     int total = 0;
+    int intVal;
     String name = "";
     String contact = "";
     String address = "";
@@ -89,9 +90,7 @@ public class cart extends AppCompatActivity {
 
         cart = new database(this).getCarts();
         adapter = new cartadapter(cart,this);
-//        adapter.notifyDataSetChanged();
         recyclerView.setAdapter(adapter);
-
 
         for (OrderModel order:cart)
             total+=(Integer.parseInt(order.getPrice()));
@@ -116,11 +115,8 @@ public class cart extends AppCompatActivity {
         database.getReference("DeliveryPrice").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                int intVal = Integer.parseInt(String.valueOf(snapshot.getValue()));
+                intVal = Integer.parseInt(String.valueOf(snapshot.getValue()));
                 Delivery.setText("₹"+snapshot.getValue().toString());
-                int res = total+intVal;
-                txtTotalPrice.setText("₹"+res);
-                totalprice.setText(("₹"+res));
             }
 
             @Override
@@ -128,6 +124,10 @@ public class cart extends AppCompatActivity {
 
             }
         });
+
+        int res = total+intVal;
+        txtTotalPrice.setText("₹"+res);
+        totalprice.setText(("₹"+res));
 
         btnback.setOnClickListener(new View.OnClickListener() {
             @Override

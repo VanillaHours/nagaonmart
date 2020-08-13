@@ -10,8 +10,8 @@
         android:id="@+id/image"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_centerVertical="true"
         android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
         android:layout_marginStart="15dp"
         android:layout_marginTop="15dp"
         android:layout_marginEnd="15dp"
@@ -36,24 +36,35 @@
         android:padding="15dp">
 
         <LinearLayout
-            android:layout_toStartOf="@+id/linear3"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:gravity="center_vertical">
+            android:layout_toStartOf="@+id/linear3"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/cart_txt"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:fontFamily="@font/open_sans"
+                android:maxLines="1"
+                android:text="Product Name"
+                android:textSize="16dp"
+                android:textStyle="bold" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+
                 <TextView
-                    android:id="@+id/cart_txt"
+                    android:id="@+id/cartCount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/open_sans"
-                    android:text="Product Name"
-                    android:textSize="16dp"
-                    android:textStyle="bold" />
+                    android:text="Count"
+                    android:textSize="14dp" />
 
                 <TextView
                     android:id="@+id/cartquantity"
@@ -62,44 +73,35 @@
                     android:fontFamily="@font/open_sans"
                     android:text="Quantity"
                     android:textSize="14dp" />
+
             </LinearLayout>
 
+
             <TextView
-                android:id="@+id/cartCount"
-                android:layout_width="wrap_content"
+                android:id="@+id/cartprice"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/open_sans"
                 android:layout_marginStart="10dp"
-                android:text="Count"
-                android:textSize="14dp" />
+                android:fontFamily="@font/open_sans"
+                android:text="Price"
+                android:textSize="18dp"
+                android:textStyle="bold" />
 
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/linear3"
-            android:layout_alignParentEnd="true"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
             android:gravity="center_vertical"
             android:orientation="vertical">
-            <TextView
-                android:id="@+id/cartprice"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/open_sans"
-                android:text="Price"
-                android:textSize="18dp"
-                android:textAlignment="center"
-                android:textStyle="bold" />
-            <TextView
+
+            <ImageView
                 android:id="@+id/remove"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/open_sans"
-                android:text="Remove"
-                android:textSize="14dp"
-                android:padding="5dp"
-                android:textAlignment="center" />
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/delete" />
         </LinearLayout>
     </RelativeLayout>
 </RelativeLayout>

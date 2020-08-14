@@ -21,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.andremion.counterfab.CounterFab;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.material.navigation.NavigationView;
@@ -39,6 +40,7 @@ import com.mart.nagaon.R;
 import com.mart.nagaon.MainActivity;
 import com.mart.nagaon.cart;
 import com.mart.nagaon.categories.catgPage;
+import com.mart.nagaon.database.database;
 import com.mart.nagaon.product.productpg;
 import com.smarteist.autoimageslider.SliderView;
 import com.squareup.picasso.Picasso;
@@ -48,7 +50,7 @@ public class homepage extends AppCompatActivity implements NavigationView.OnNavi
     //homepagename
     TextView name;
 
-    ImageView btncart;
+    CounterFab btncart;
 
     //navigation
     static final float END_SCALE = 0.7f;
@@ -160,12 +162,23 @@ public class homepage extends AppCompatActivity implements NavigationView.OnNavi
             }
         });
 
+        btncart.setCount(new database(this).getCountCart());
+
         cat_rec();
         navigationDrawer();
         updateheader();
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        btncart.setCount(new database(this).getCountCart());
+        if(categoryAdapter!=null){
+            categoryAdapter.startListening();
+        }
+
+    }
 
     private void updateheader() {
 

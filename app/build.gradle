@@ -43,6 +43,8 @@ dependencies {
     implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
     implementation 'com.readystatesoftware.sqliteasset:sqliteassethelper:+'
 
+    implementation 'com.github.andremion:counterfab:1.2.2'
+
     implementation 'com.airbnb.android:lottie:3.4.1'
     implementation 'com.google.firebase:firebase-auth:19.3.2'
     implementation 'com.google.firebase:firebase-firestore:21.5.0'

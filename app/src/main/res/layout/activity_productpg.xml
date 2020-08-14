@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/white"
     tools:context=".product.productpg">
 
     <RelativeLayout
@@ -41,14 +42,21 @@
             android:textColor="#c2000000"
             android:textStyle="bold" />
 
-        <ImageView
+        <com.andremion.counterfab.CounterFab
             android:id="@+id/cart"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:padding="15dp"
+            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
-            android:src="@drawable/cart_img" />
+            android:layout_marginEnd="0dp"
+            android:padding="0dp"
+            app:borderWidth="0dp"
+            app:elevation="0dp"
+            app:badgeBackgroundColor="@color/colorPrimary"
+            app:badgeTextColor="@android:color/white"
+            app:badgePosition="LeftTop"
+            android:backgroundTint="@android:color/white"
+            app:srcCompat="@drawable/cart_img" />
     </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView

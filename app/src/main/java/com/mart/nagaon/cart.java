@@ -6,9 +6,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -31,6 +34,8 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.mart.nagaon.database.database;
+import com.squareup.picasso.Picasso;
+
 
 public class cart extends AppCompatActivity {
 
@@ -40,11 +45,11 @@ public class cart extends AppCompatActivity {
     FirebaseDatabase database;
     DatabaseReference requests;
 
-    TextView txtTotalPrice, bagtotal, Delivery, totalprice;
-    Button btnPlaceOrder,startshop;
+    public TextView txtTotalPrice, bagtotal, Delivery, totalprice;
+    Button btnPlaceOrder, startshop;
     ImageView btnback;
     RelativeLayout cat_rel1;
-    View card1 ;
+    View card1;
     LinearLayout card2, emptyDialog;
 
     int total = 0;
@@ -71,16 +76,16 @@ public class cart extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         requests = database.getReference("Requests");
 
-        recyclerView = (RecyclerView)findViewById(R.id.listcart);
+        recyclerView = (RecyclerView) findViewById(R.id.listcart);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        txtTotalPrice = (TextView)findViewById(R.id.total);
-        bagtotal = (TextView)findViewById(R.id.bagTotal);
-        Delivery = (TextView)findViewById(R.id.delivery);
-        totalprice = (TextView)findViewById(R.id.totalPrice);
-        btnPlaceOrder = (Button)findViewById(R.id.btnPlaceOrder);
+        txtTotalPrice = (TextView) findViewById(R.id.total);
+        bagtotal = (TextView) findViewById(R.id.bagTotal);
+        Delivery = (TextView) findViewById(R.id.delivery);
+        totalprice = (TextView) findViewById(R.id.totalPrice);
+        btnPlaceOrder = (Button) findViewById(R.id.btnPlaceOrder);
         btnback = findViewById(R.id.cat_back);
 
         loadlistfood();
@@ -89,13 +94,13 @@ public class cart extends AppCompatActivity {
     private void loadlistfood() {
 
         cart = new database(this).getCarts();
-        adapter = new cartadapter(cart,this);
+        adapter = new cartadapter(cart, this);
         recyclerView.setAdapter(adapter);
 
-        for (OrderModel order:cart)
-            total+=(Integer.parseInt(order.getPrice()));
+        for (OrderModel order : cart)
+            total += (Integer.parseInt(order.getPrice()));
 
-        if(total == 0){
+        if (total == 0) {
             recyclerView.setVisibility(View.GONE);
             cat_rel1.setVisibility(View.GONE);
             card1.setVisibility(View.GONE);
@@ -109,14 +114,16 @@ public class cart extends AppCompatActivity {
             });
         }
 
-
-        bagtotal.setText("₹"+total);
+        bagtotal.setText("₹" + total);
 
         database.getReference("DeliveryPrice").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 intVal = Integer.parseInt(String.valueOf(snapshot.getValue()));
-                Delivery.setText("₹"+snapshot.getValue().toString());
+                Delivery.setText("₹" + snapshot.getValue().toString());
+                int res = total + intVal;
+                txtTotalPrice.setText("₹" + res);
+                totalprice.setText(("₹" + res));
             }
 
             @Override
@@ -124,10 +131,6 @@ public class cart extends AppCompatActivity {
 
             }
         });
-
-        int res = total+intVal;
-        txtTotalPrice.setText("₹"+res);
-        totalprice.setText(("₹"+res));
 
         btnback.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -141,12 +144,12 @@ public class cart extends AppCompatActivity {
                 .addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
                     @Override
                     public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-                        if(value.exists()){
+                        if (value.exists()) {
 
-                            name =value.getString("name");
+                            name = value.getString("name");
                             contact = value.getString("contact");
 
-                        }else {
+                        } else {
                             Log.d(TAG, "onEvent: Document doesn't exist ");
                         }
                     }
@@ -171,4 +174,5 @@ public class cart extends AppCompatActivity {
         });
 
     }
+
 }

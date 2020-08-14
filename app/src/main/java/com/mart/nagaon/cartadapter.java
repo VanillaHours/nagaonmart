@@ -11,16 +11,11 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.mart.nagaon.database.database;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 class cartViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
@@ -53,18 +48,18 @@ class cartViewHolder extends RecyclerView.ViewHolder implements View.OnClickList
 public class cartadapter extends RecyclerView.Adapter<cartViewHolder>{
 
     private List<OrderModel> listdata = new ArrayList<>();
-    private Context context;
+    private cart cart;
 
-    public cartadapter(List<OrderModel> listdata, Context context) {
+    public cartadapter(List<OrderModel> listdata, cart cart) {
         this.listdata = listdata;
-        this.context = context;
+        this.cart = cart;
     }
 
     @NonNull
     @Override
     public cartViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        LayoutInflater inflater = LayoutInflater.from(context);
+        LayoutInflater inflater = LayoutInflater.from(cart);
         View itemview = inflater.inflate(R.layout.cart_card,parent,false);
         return new cartViewHolder(itemview);
     }
@@ -80,7 +75,7 @@ public class cartadapter extends RecyclerView.Adapter<cartViewHolder>{
         holder.remove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new database(context).removeItem(new OrderModel(
+                new database(cart).removeItem(new OrderModel(
                         listdata.get(position).getProdID(),
                         listdata.get(position).getProdName(),
                         listdata.get(position).getPrice(),
@@ -90,9 +85,31 @@ public class cartadapter extends RecyclerView.Adapter<cartViewHolder>{
                 ));
 //                listdata.remove(holder.getAdapterPosition());
 //                notifyDataSetChanged();
+                int total = 0;
+                List<OrderModel> orders = new database(cart).getCarts();
+                for (OrderModel item : orders)
+                    total += (Integer.parseInt(item.getPrice()));
+
+                if (total == 0) {
+                    cart.recyclerView.setVisibility(View.GONE);
+                    cart.cat_rel1.setVisibility(View.GONE);
+                    cart.card1.setVisibility(View.GONE);
+                    cart.emptyDialog.setVisibility(View.VISIBLE);
+                    cart.card2.setVisibility(View.GONE);
+                    cart.startshop.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            cart.finish();
+                        }
+                    });
+                }
+                cart.bagtotal.setText("₹" + total);
+                int res = total + cart.intVal;
+                cart.txtTotalPrice.setText("₹" + res);
+                cart.totalprice.setText(("₹" + res));
 
                 removeAt(holder.getAdapterPosition());
-                Toast.makeText(context,"Removed",Toast.LENGTH_SHORT).show();
+                Toast.makeText(cart,"Removed",Toast.LENGTH_SHORT).show();
             }
         });
     }

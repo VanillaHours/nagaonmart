@@ -20,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.andremion.counterfab.CounterFab;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -48,7 +49,7 @@ public class productpg extends AppCompatActivity {
     private FirebaseRecyclerAdapter<prodmodel, prodadapter> adapter;
 
     TextView prod_head,prod_num;
-    ImageView cartbtn;
+    CounterFab cartbtn;
 
     String subId = "";
     String foodID = "";
@@ -72,6 +73,7 @@ public class productpg extends AppCompatActivity {
                 startActivity(new Intent(productpg.this, cart.class));
             }
         });
+        cartbtn.setCount(new database(this).getCountCart());
 
         if(getIntent()!=null) {
             subId = getIntent().getStringExtra("SubID");
@@ -84,6 +86,16 @@ public class productpg extends AppCompatActivity {
         if(catId != null && !catId.isEmpty()){
             cat_rec();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        cartbtn.setCount(new database(this).getCountCart());
+        if(adapter!=null){
+            adapter.startListening();
+        }
+
     }
 
     private void cat_rec() {

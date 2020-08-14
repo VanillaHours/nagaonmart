@@ -12,6 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".Address"></activity>
         <activity android:name=".cart" />
         <activity android:name=".product.productpg" />
         <activity android:name=".categories.catgPage" />

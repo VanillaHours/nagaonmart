@@ -67,4 +67,18 @@ public class database extends SQLiteAssetHelper {
         SQLiteDatabase db = getReadableDatabase();
         db.delete("OrderDetail","ProdName =? and Price =?", new String[]{order.getProdName(),order.getPrice()});
     }
+
+    public int getCountCart() {
+         int count = 0;
+         SQLiteDatabase db = getReadableDatabase();
+         String query = String.format("SELECT COUNT(*) FROM OrderDetail");
+         Cursor cursor = db.rawQuery(query,null);
+         if(cursor.moveToNext()){
+             do {
+                 count=cursor.getInt(0);
+             }while (cursor.moveToNext());
+         }
+         return count;
+    }
+
 }

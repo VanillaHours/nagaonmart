@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -158,18 +159,21 @@ public class cart extends AppCompatActivity {
         btnPlaceOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                request request = new request(
-                        contact,
-                        name,
-                        address,
-                        txtTotalPrice.getText().toString(),
-                        cart
-                );
-                requests.child(String.valueOf(System.currentTimeMillis()))
-                        .setValue(request);
-                new database(getBaseContext()).cleancart();
-                Toast.makeText(com.mart.nagaon.cart.this, "Order Placed", Toast.LENGTH_SHORT).show();
-                finish();
+
+                startActivity(new Intent(cart.this,Address.class));
+
+//                request request = new request(
+//                        contact,
+//                        name,
+//                        address,
+//                        txtTotalPrice.getText().toString(),
+//                        cart
+//                );
+//                requests.child(String.valueOf(System.currentTimeMillis()))
+//                        .setValue(request);
+//                new database(getBaseContext()).cleancart();
+//                Toast.makeText(com.mart.nagaon.cart.this, "Order Placed", Toast.LENGTH_SHORT).show();
+//                finish();
             }
         });
 

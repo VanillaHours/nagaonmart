@@ -12,14 +12,31 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Address"></activity>
-        <activity android:name=".cart" />
-        <activity android:name=".product.productpg" />
-        <activity android:name=".categories.catgPage" />
-        <activity android:name=".home.homepage" />
-        <activity android:name=".signpage" />
-        <activity android:name=".loginpage" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".payment"></activity>
+        <activity
+            android:name=".Address"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".cart"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".product.productpg"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".categories.catgPage"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".home.homepage"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".signpage"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".loginpage"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -30,6 +47,10 @@
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+
+        <meta-data
+            android:name="com.razorpay.ApiKey"
+            android:value="rzp_test_DJhI2p8mfavqEs" />
     </application>
 
 </manifest>

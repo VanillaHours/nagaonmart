@@ -49,7 +49,7 @@ public class productpg extends AppCompatActivity {
     private FirebaseRecyclerAdapter<prodmodel, prodadapter> adapter;
 
     TextView prod_head,prod_num;
-    CounterFab cartbtn;
+    ImageView back_img;
 
     String subId = "";
     String foodID = "";
@@ -62,18 +62,17 @@ public class productpg extends AppCompatActivity {
         setContentView(R.layout.activity_productpg);
 
         cat_rec = findViewById(R.id.prod_rec);
-        cartbtn = findViewById(R.id.cart);
+        back_img = findViewById(R.id.back_img);
 
         prod_head=findViewById(R.id.prod_txt);
         prod_num=findViewById(R.id.prodnum);
 
-        cartbtn.setOnClickListener(new View.OnClickListener() {
+        back_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(productpg.this, cart.class));
+                finish();
             }
         });
-        cartbtn.setCount(new database(this).getCountCart());
 
         if(getIntent()!=null) {
             subId = getIntent().getStringExtra("SubID");
@@ -86,16 +85,6 @@ public class productpg extends AppCompatActivity {
         if(catId != null && !catId.isEmpty()){
             cat_rec();
         }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        cartbtn.setCount(new database(this).getCountCart());
-        if(adapter!=null){
-            adapter.startListening();
-        }
-
     }
 
     private void cat_rec() {
@@ -144,8 +133,10 @@ public class productpg extends AppCompatActivity {
                         botdisplay = bottomSheetDialog.findViewById(R.id.display);
                         ImageView botinc = bottomSheetDialog.findViewById(R.id.increment);
                         ImageView botdec = bottomSheetDialog.findViewById(R.id.decrement);
-                        Button contshop = bottomSheetDialog.findViewById(R.id.cont);
-                        Button addToCart = bottomSheetDialog.findViewById(R.id.addToCart);
+                        final Button contshop = bottomSheetDialog.findViewById(R.id.cont);
+                        final Button contshop11 = bottomSheetDialog.findViewById(R.id.cont11);
+                        final Button addToCart = bottomSheetDialog.findViewById(R.id.addToCart);
+                        final Button addToCart11 = bottomSheetDialog.findViewById(R.id.addToCart11);
 
                         botname.setText(""+model.getName());
                         botquan.setText("Quantity: "+model.getQuantity());
@@ -161,7 +152,7 @@ public class productpg extends AppCompatActivity {
                                 finalCost = finalCost + cost;
                                 q++;
                                 botdisplay.setText(""+q);
-                                botprice.setText(""+finalCost);
+                                botprice.setText("₹"+finalCost);
                             }
                         });
 
@@ -172,7 +163,7 @@ public class productpg extends AppCompatActivity {
                                     finalCost = finalCost - cost;
                                     q--;
                                     botdisplay.setText(""+q);
-                                    botprice.setText(""+finalCost);
+                                    botprice.setText("₹"+finalCost);
                                 }
                             }
                         });
@@ -196,6 +187,23 @@ public class productpg extends AppCompatActivity {
                                         ""+q,
                                         model.getImage()
                                 ));
+                                addToCart.setVisibility(View.GONE);
+                                contshop.setVisibility(View.GONE);
+                                contshop11.setVisibility(View.VISIBLE);
+                                addToCart11.setVisibility(View.VISIBLE);
+                            }
+                        });
+
+                        addToCart11.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                startActivity(new Intent(productpg.this,cart.class));
+                                bottomSheetDialog.dismiss();
+                            }
+                        });
+                        contshop11.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
                                 bottomSheetDialog.dismiss();
                             }
                         });
@@ -289,7 +297,7 @@ public class productpg extends AppCompatActivity {
                                 finalCost = finalCost + cost;
                                 q++;
                                 botdisplay.setText(""+q);
-                                botprice.setText(""+finalCost);
+                                botprice.setText("₹"+finalCost);
                             }
                         });
 
@@ -300,7 +308,7 @@ public class productpg extends AppCompatActivity {
                                     finalCost = finalCost - cost;
                                     q--;
                                     botdisplay.setText(""+q);
-                                    botprice.setText(""+finalCost);
+                                    botprice.setText("₹"+finalCost);
                                 }
                             }
                         });

@@ -136,6 +136,17 @@
             android:text="Cancel"
             android:textColor="@color/colorPrimary"
             android:textSize="10dp" />
+        <Button
+            android:id="@+id/cont11"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/cont"
+            android:fontFamily="@font/open_sans"
+            android:text="Continue Shopping"
+            android:textColor="@color/colorPrimary"
+            android:textSize="10dp"
+            android:visibility="gone"/>
 
         <Button
             android:id="@+id/addToCart"
@@ -147,6 +158,18 @@
             android:text="Add to Cart"
             android:textColor="#fff"
             android:textSize="10dp" />
+
+        <Button
+            android:id="@+id/addToCart11"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/addcart"
+            android:fontFamily="@font/open_sans"
+            android:text="Go to Cart"
+            android:textColor="#fff"
+            android:textSize="10dp"
+            android:visibility="gone"/>
 
     </LinearLayout>
 

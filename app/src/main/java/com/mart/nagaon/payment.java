@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -29,10 +30,17 @@ import java.util.List;
 
 public class payment extends AppCompatActivity implements PaymentResultListener {
 
+    TextView nameView, contactView, addressView, bagTotalView, deliveryView, totalPriceView;
+
     Button placeorder;
     String name = "";
     String contact = "";
     String address = "";
+    String bag = "";
+    String delivery = "";
+    String OrderID = "";
+
+    int res, result;
     public static final String TAG = "TAG";
     List<OrderModel> cart = new ArrayList<>();
 
@@ -41,41 +49,41 @@ public class payment extends AppCompatActivity implements PaymentResultListener 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment);
 
+        nameView = findViewById(R.id.l_name);
+        contactView = findViewById(R.id.l_contact);
+        addressView = findViewById(R.id.l_address);
+        bagTotalView = findViewById(R.id.bagTotal);
+        deliveryView = findViewById(R.id.delivery);
+        totalPriceView = findViewById(R.id.totalPrice);
+        OrderID = ""+System.currentTimeMillis();
+
+        if (getIntent() != null) {
+            address = getIntent().getStringExtra("address");
+            name = getIntent().getStringExtra("name");
+            contact = getIntent().getStringExtra("contact");
+            bag = getIntent().getStringExtra("bag");
+            delivery = getIntent().getStringExtra("delivery");
+
+            Toast.makeText(getApplicationContext(), name + contact + address, Toast.LENGTH_LONG).show();
+
+        }
+        nameView.setText(name);
+        contactView.setText(contact);
+        addressView.setText(address);
+        bagTotalView.setText("₹" + bag);
+        deliveryView.setText("₹" + delivery);
+        res = Integer.parseInt(bag) + Integer.parseInt(delivery);
+        result = res * 100;
+        totalPriceView.setText("₹" + res);
+
         placeorder = findViewById(R.id.order);
         cart = new database(this).getCarts();
-
-        FirebaseFirestore.getInstance().collection("users")
-                .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-                        if (value.exists()) {
-
-                            name = value.getString("name");
-                            contact = value.getString("contact");
-
-                        } else {
-                            Log.d(TAG, "onEvent: Document doesn't exist ");
-                        }
-                    }
-                });
 
         placeorder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 startPayment();
-//                request request = new request(
-//                        contact,
-//                        name,
-//                        address,
-//                        "txtTotalPrice.getText().toString()",
-//                        cart
-//                );
-//                FirebaseDatabase.getInstance().getReference("Requests").child(String.valueOf(System.currentTimeMillis()))
-//                        .setValue(request);
-//                new database(getBaseContext()).cleancart();
-//                Toast.makeText(payment.this, "Order Placed", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -104,16 +112,14 @@ public class payment extends AppCompatActivity implements PaymentResultListener 
             JSONObject options = new JSONObject();
 
             options.put("name", "NagaonMart");
-            options.put("description", "Reference No. #123456");
+            options.put("description", "OrderID: "+OrderID);
 //            options.put("image", "https://s3.amazonaws.com/rzp-mobile/images/rzp.png");
 //            options.put("order_id", "order_DBJOWzybf0sJbb");
             options.put("theme.color", "#3282B8");
             options.put("currency", "INR");
-            options.put("amount", "50000");//pass amount in currency subunits
-            options.put("prefill.email", "gaurav.kumar@example.com");
-            options.put("prefill.contact","9988776655");
+            options.put("amount", "" + result);//pass amount in currency subunits
             checkout.open(activity, options);
-        } catch(Exception e) {
+        } catch (Exception e) {
             Log.e(TAG, "Error in starting Razorpay Checkout", e);
         }
     }
@@ -122,7 +128,21 @@ public class payment extends AppCompatActivity implements PaymentResultListener 
     public void onPaymentSuccess(String s) {
 
         Toast.makeText(payment.this, "Order Placed", Toast.LENGTH_SHORT).show();
-
+        request request = new request(
+                contact,
+                name,
+                address,
+                ""+res,
+                "Pay Now",
+                "Success",
+                cart
+        );
+        FirebaseDatabase.getInstance().getReference("Requests").child(OrderID)
+                .setValue(request);
+        new database(getBaseContext()).cleancart();
+        startActivity(new Intent(payment.this, success.class));
+        Toast.makeText(payment.this, "Order Placed", Toast.LENGTH_SHORT).show();
+        finish();
     }
 
     @Override

@@ -12,7 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".payment"></activity>
+        <activity android:name=".success"></activity>
+        <activity android:name=".payment" />
         <activity
             android:name=".Address"
             android:screenOrientation="portrait" />
@@ -47,7 +48,6 @@
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
-
         <meta-data
             android:name="com.razorpay.ApiKey"
             android:value="rzp_test_DJhI2p8mfavqEs" />

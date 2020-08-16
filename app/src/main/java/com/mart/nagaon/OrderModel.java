@@ -2,12 +2,43 @@ package com.mart.nagaon;
 
 public class OrderModel {
 
+    private int ID;
     private String ProdID;
     private String ProdName;
-    private String Price;
+    private Integer Price;
     private String Quantity;
-    private String Count;
+    private Integer Count;
     private String Image;
+
+    public OrderModel(String prodID, String prodName, Integer price, String quantity, Integer count, String image) {
+        ProdID = prodID;
+        ProdName = prodName;
+        Price = price;
+        Quantity = quantity;
+        Count = count;
+        Image = image;
+    }
+
+    public OrderModel(int ID, String prodID, String prodName, Integer price, String quantity, Integer count, String image) {
+        this.ID = ID;
+        ProdID = prodID;
+        ProdName = prodName;
+        Price = price;
+        Quantity = quantity;
+        Count = count;
+        Image = image;
+    }
+
+    public OrderModel() {
+    }
+
+    public int getID() {
+        return ID;
+    }
+
+    public void setID(int ID) {
+        this.ID = ID;
+    }
 
     public String getProdID() {
         return ProdID;
@@ -25,11 +56,11 @@ public class OrderModel {
         ProdName = prodName;
     }
 
-    public String getPrice() {
+    public Integer getPrice() {
         return Price;
     }
 
-    public void setPrice(String price) {
+    public void setPrice(Integer price) {
         Price = price;
     }
 
@@ -41,11 +72,11 @@ public class OrderModel {
         Quantity = quantity;
     }
 
-    public String getCount() {
+    public Integer getCount() {
         return Count;
     }
 
-    public void setCount(String count) {
+    public void setCount(Integer count) {
         Count = count;
     }
 
@@ -55,17 +86,5 @@ public class OrderModel {
 
     public void setImage(String image) {
         Image = image;
-    }
-
-    public OrderModel(String prodID, String prodName, String price, String quantity, String count, String image) {
-        ProdID = prodID;
-        ProdName = prodName;
-        Price = price;
-        Quantity = quantity;
-        Count = count;
-        Image = image;
-    }
-
-    public OrderModel() {
     }
 }

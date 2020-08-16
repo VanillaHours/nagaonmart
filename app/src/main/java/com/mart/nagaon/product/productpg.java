@@ -182,9 +182,9 @@ public class productpg extends AppCompatActivity {
                                 new database(getBaseContext()).addtocart(new OrderModel(
                                         foodID,
                                         model.getName(),
-                                        ""+finalCost,
+                                        cost,
                                         model.getQuantity(),
-                                        ""+q,
+                                        q,
                                         model.getImage()
                                 ));
                                 addToCart.setVisibility(View.GONE);
@@ -294,7 +294,7 @@ public class productpg extends AppCompatActivity {
                         botinc.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                finalCost = finalCost + cost;
+                                finalCost += cost*q;
                                 q++;
                                 botdisplay.setText(""+q);
                                 botprice.setText("₹"+finalCost);
@@ -305,7 +305,7 @@ public class productpg extends AppCompatActivity {
                             @Override
                             public void onClick(View view) {
                                 if(q>1){
-                                    finalCost = finalCost - cost;
+                                    finalCost -= cost*q;
                                     q--;
                                     botdisplay.setText(""+q);
                                     botprice.setText("₹"+finalCost);
@@ -327,9 +327,9 @@ public class productpg extends AppCompatActivity {
                                 new database(getBaseContext()).addtocart(new OrderModel(
                                         foodID,
                                         model.getName(),
-                                        ""+finalCost,
+                                        cost,
                                         model.getQuantity(),
-                                        ""+q,
+                                        q,
                                         model.getImage()
 
                                 ));

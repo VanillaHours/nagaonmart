@@ -7,17 +7,37 @@ public class request {
     private String name;
     private String address;
     private String total;
+    private String paymentMethod;
+    private String paymentStatus;
     private List<OrderModel> foods;
 
     public request() {
     }
 
-    public request(String phone, String name, String address, String total, List<OrderModel> foods) {
+    public request(String phone, String name, String address, String total, String paymentMethod, String paymentStatus, List<OrderModel> foods) {
         this.phone = phone;
         this.name = name;
         this.address = address;
         this.total = total;
+        this.paymentMethod = paymentMethod;
+        this.paymentStatus = paymentStatus;
         this.foods = foods;
+    }
+
+    public String getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(String paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+
+    public String getPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public void setPaymentStatus(String paymentStatus) {
+        this.paymentStatus = paymentStatus;
     }
 
     public String getPhone() {

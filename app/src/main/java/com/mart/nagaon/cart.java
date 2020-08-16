@@ -99,7 +99,7 @@ public class cart extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         for (OrderModel order : cart)
-            total += (Integer.parseInt(order.getPrice()));
+            total += order.getPrice() * order.getCount();
 
         if (total == 0) {
             recyclerView.setVisibility(View.GONE);
@@ -140,27 +140,14 @@ public class cart extends AppCompatActivity {
             }
         });
 
-        FirebaseFirestore.getInstance().collection("users")
-                .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-                        if (value.exists()) {
-
-                            name = value.getString("name");
-                            contact = value.getString("contact");
-
-                        } else {
-                            Log.d(TAG, "onEvent: Document doesn't exist ");
-                        }
-                    }
-                });
-
         btnPlaceOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                startActivity(new Intent(cart.this,Address.class));
+                Intent cart_del = new Intent(cart.this, Address.class);
+                cart_del.putExtra("bagtotal",""+total);
+                cart_del.putExtra("delivery",""+intVal);
+                startActivity(cart_del);
 
 //                request request = new request(
 //                        contact,

@@ -24,7 +24,7 @@ public class database extends SQLiteAssetHelper {
         SQLiteDatabase db = getReadableDatabase();
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
 
-        String[] sqlSelect = {"ProdName", "ProdID", "Quantity", "Price", "Count", "Image"};
+        String[] sqlSelect = {"ID", "ProdName", "ProdID", "Quantity", "Price", "Count", "Image"};
         String sqltable = "OrderDetail";
 
         qb.setTables(sqltable);
@@ -33,11 +33,13 @@ public class database extends SQLiteAssetHelper {
         final List<OrderModel> result = new ArrayList<>();
         if(c.moveToFirst()){
             do{
-                result.add(new OrderModel(c.getString(c.getColumnIndex("ProdID")),
+                result.add(new OrderModel(
+                        c.getInt(c.getColumnIndex("ID")),
+                        c.getString(c.getColumnIndex("ProdID")),
                         c.getString(c.getColumnIndex("ProdName")),
-                        c.getString(c.getColumnIndex("Price")),
+                        c.getInt(c.getColumnIndex("Price")),
                         c.getString(c.getColumnIndex("Quantity")),
-                        c.getString(c.getColumnIndex("Count")),
+                        c.getInt(c.getColumnIndex("Count")),
                         c.getString(c.getColumnIndex("Image"))
                 ));
             }while (c.moveToNext());
@@ -65,7 +67,7 @@ public class database extends SQLiteAssetHelper {
 
     public void removeItem(OrderModel order){
         SQLiteDatabase db = getReadableDatabase();
-        db.delete("OrderDetail","ProdName =? and Price =?", new String[]{order.getProdName(),order.getPrice()});
+        db.delete("OrderDetail","ProdName =? and Price =?", new String[]{order.getProdName(),""+order.getPrice()});
     }
 
     public int getCountCart() {
@@ -81,4 +83,9 @@ public class database extends SQLiteAssetHelper {
          return count;
     }
 
+    public void updatecart(OrderModel order) {
+        SQLiteDatabase db = getReadableDatabase();
+        String query = String.format("UPDATE OrderDetail SET Count=%d WHERE ID=%d",order.getCount(),order.getID());
+        db.execSQL(query);
+    }
 }

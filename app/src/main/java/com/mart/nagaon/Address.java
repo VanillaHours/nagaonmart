@@ -51,8 +51,6 @@ public class Address extends AppCompatActivity {
         if(getIntent()!=null) {
             bag = getIntent().getStringExtra("bagtotal");
             delivery = getIntent().getStringExtra("delivery");
-
-            Toast.makeText(getApplicationContext(),bag+"     "+delivery,Toast.LENGTH_LONG).show();
         }
 
         FirebaseFirestore.getInstance().collection("users")
@@ -80,26 +78,26 @@ public class Address extends AppCompatActivity {
                 String stringpin = pin_code.getEditText().getText().toString().trim();
                 String stringtown = town.getEditText().getText().toString().trim();
 
-                if(TextUtils.isEmpty(stringname)){
-                    add_name.setError("Name is Required");
-                    return;
-                }
-                if (TextUtils.isEmpty(stringpin)){
-                    pin_code.setError("Pincode is Required");
-                    return;
-                }
-                if (TextUtils.isEmpty(stringcontact)){
-                    add_num.setError("Contact Number is Required");
-                    return;
-                }
-                if (TextUtils.isEmpty(stringaddress)){
-                    address.setError("Contact Number is Required");
-                    return;
-                }
-                if (TextUtils.isEmpty(stringtown)){
-                    town.setError("Contact Number is Required");
-                    return;
-                }
+//                if(TextUtils.isEmpty(stringname)){
+//                    add_name.setError("Name is Required");
+//                    return;
+//                }
+//                if (TextUtils.isEmpty(stringpin)){
+//                    pin_code.setError("Pincode is Required");
+//                    return;
+//                }
+//                if (TextUtils.isEmpty(stringcontact)){
+//                    add_num.setError("Contact Number is Required");
+//                    return;
+//                }
+//                if (TextUtils.isEmpty(stringaddress)){
+//                    address.setError("Contact Number is Required");
+//                    return;
+//                }
+//                if (TextUtils.isEmpty(stringtown)){
+//                    town.setError("Contact Number is Required");
+//                    return;
+//                }
 
                 full_address = (pin_code.getEditText().getText().toString()+"+"+address.getEditText().getText().toString()+"+"+town.getEditText().getText().toString()+"+"+city.getEditText().getText().toString()+"+"+state.getEditText().getText().toString());
                 Intent address_del = new Intent(Address.this, payment.class);
@@ -109,7 +107,6 @@ public class Address extends AppCompatActivity {
                 address_del.putExtra("name",add_name.getEditText().getText().toString());
                 address_del.putExtra("contact",add_num.getEditText().getText().toString());
                 startActivity(address_del);
-                Toast.makeText(getApplicationContext(),full_address,Toast.LENGTH_SHORT).show();
             }
         });
 

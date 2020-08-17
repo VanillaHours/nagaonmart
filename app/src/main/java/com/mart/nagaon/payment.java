@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,12 +27,17 @@ import com.razorpay.PaymentResultListener;
 
 import org.json.JSONObject;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class payment extends AppCompatActivity implements PaymentResultListener {
 
-    TextView nameView, contactView, addressView, bagTotalView, deliveryView, totalPriceView;
+    TextView nameView, contactView, addressView, bagTotalView, deliveryView, totalPriceView, delTime;
+
+    RadioGroup radioGroup;
+    RadioButton radioButton;
 
     Button placeorder;
     String name = "";
@@ -55,7 +62,13 @@ public class payment extends AppCompatActivity implements PaymentResultListener 
         bagTotalView = findViewById(R.id.bagTotal);
         deliveryView = findViewById(R.id.delivery);
         totalPriceView = findViewById(R.id.totalPrice);
+        radioGroup = findViewById(R.id.pay_method);
+        delTime = findViewById(R.id.del_time);
         OrderID = ""+System.currentTimeMillis();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_YEAR,1);
+        String exptime = DateFormat.getDateInstance(DateFormat.FULL).format(calendar.getTimeInMillis());
 
         if (getIntent() != null) {
             address = getIntent().getStringExtra("address");
@@ -63,8 +76,6 @@ public class payment extends AppCompatActivity implements PaymentResultListener 
             contact = getIntent().getStringExtra("contact");
             bag = getIntent().getStringExtra("bag");
             delivery = getIntent().getStringExtra("delivery");
-
-            Toast.makeText(getApplicationContext(), name + contact + address, Toast.LENGTH_LONG).show();
 
         }
         nameView.setText(name);
@@ -75,6 +86,7 @@ public class payment extends AppCompatActivity implements PaymentResultListener 
         res = Integer.parseInt(bag) + Integer.parseInt(delivery);
         result = res * 100;
         totalPriceView.setText("₹" + res);
+        delTime.setText("by "+exptime);
 
         placeorder = findViewById(R.id.order);
         cart = new database(this).getCarts();
@@ -82,8 +94,33 @@ public class payment extends AppCompatActivity implements PaymentResultListener 
         placeorder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                int radioId = radioGroup.getCheckedRadioButtonId();
+                radioButton = findViewById(radioId);
 
-                startPayment();
+                switch (radioId){
+                    case R.id.cod:
+                        request request = new request(
+                                contact,
+                                name,
+                                address,
+                                ""+res,
+                                "Cash On Delivery",
+                                "Success",
+                                cart
+                        );
+                        FirebaseDatabase.getInstance().getReference("Requests").child(OrderID)
+                                .setValue(request);
+                        new database(getBaseContext()).cleancart();
+                        Intent intent = new Intent(payment.this, success.class);
+                        intent.putExtra("status","success");
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                        finish();
+                        break;
+                    case R.id.paynow:
+                        startPayment();
+                        break;
+                }
             }
         });
     }
@@ -127,7 +164,6 @@ public class payment extends AppCompatActivity implements PaymentResultListener 
     @Override
     public void onPaymentSuccess(String s) {
 
-        Toast.makeText(payment.this, "Order Placed", Toast.LENGTH_SHORT).show();
         request request = new request(
                 contact,
                 name,
@@ -140,15 +176,25 @@ public class payment extends AppCompatActivity implements PaymentResultListener 
         FirebaseDatabase.getInstance().getReference("Requests").child(OrderID)
                 .setValue(request);
         new database(getBaseContext()).cleancart();
-        startActivity(new Intent(payment.this, success.class));
+        Intent intent = new Intent(payment.this, success.class);
+        intent.putExtra("status","success");
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
         Toast.makeText(payment.this, "Order Placed", Toast.LENGTH_SHORT).show();
-        finish();
     }
 
     @Override
     public void onPaymentError(int i, String s) {
         Toast.makeText(payment.this, "Order Failed", Toast.LENGTH_SHORT).show();
         Toast.makeText(payment.this, s, Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(payment.this, success.class);
+        intent.putExtra("status","failed");
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 
+    public void checkButton(View view) {
+        int radioId = radioGroup.getCheckedRadioButtonId();
+        radioButton = findViewById(radioId);
+    }
 }

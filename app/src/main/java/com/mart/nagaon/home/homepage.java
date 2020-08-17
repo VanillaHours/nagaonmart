@@ -170,16 +170,6 @@ public class homepage extends AppCompatActivity implements NavigationView.OnNavi
 
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        btncart.setCount(new database(this).getCountCart());
-        if(categoryAdapter!=null){
-            categoryAdapter.startListening();
-        }
-
-    }
-
     private void updateheader() {
 
         NavigationView navigationView = findViewById(R.id.navigation_view);
@@ -313,4 +303,14 @@ public class homepage extends AppCompatActivity implements NavigationView.OnNavi
         cat_rec.setAdapter(categoryAdapter);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        btncart.setCount(new database(this).getCountCart());
+        if(categoryAdapter!=null){
+            categoryAdapter.startListening();
+            categoryAdapter.notifyDataSetChanged();
+        }
+
+    }
 }

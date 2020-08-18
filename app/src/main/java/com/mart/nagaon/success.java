@@ -32,8 +32,8 @@ public class success extends AppCompatActivity {
 
         if(status.equals("success")){
             successLayout.setVisibility(View.VISIBLE);
-        }
-        failedLayout.setVisibility(View.VISIBLE);
+        }else
+            failedLayout.setVisibility(View.VISIBLE);
 
         shome.setOnClickListener(new View.OnClickListener() {
             @Override

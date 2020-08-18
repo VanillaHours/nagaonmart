@@ -1,26 +1,22 @@
-package com.mart.nagaon.product;
+package com.mart.nagaon;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Layout;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.andremion.counterfab.CounterFab;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -30,86 +26,91 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.mart.nagaon.ItemClickListener;
-import com.mart.nagaon.OrderModel;
+import com.mancj.materialsearchbar.MaterialSearchBar;
 import com.mart.nagaon.database.database;
-import com.mart.nagaon.cart;
-import com.mart.nagaon.R;
+import com.mart.nagaon.product.prodadapter;
+import com.mart.nagaon.product.prodmodel;
+import com.mart.nagaon.product.productpg;
 import com.squareup.picasso.Picasso;
 
-public class productpg extends AppCompatActivity {
+import java.util.ArrayList;
+import java.util.List;
 
-    int q, cost, finalCost;
+public class search extends AppCompatActivity {
+
+    FirebaseRecyclerAdapter<prodmodel, prodadapter> searchadapter;
+    private FirebaseRecyclerOptions<prodmodel> options;
+    List<String> suggestList = new ArrayList<>();
+    MaterialSearchBar materialSearchBar;
     BottomSheetDialog bottomSheetDialog;
     TextView botdisplay, botprice;
+    int q, cost, finalCost;
 
-    RecyclerView cat_rec;
-    //cat firebase
-    private FirebaseRecyclerOptions<prodmodel> options;
-    private FirebaseRecyclerAdapter<prodmodel, prodadapter> adapter;
-
-    TextView prod_head,prod_num;
-    ImageView back_img;
-
-    String subId = "";
-    String foodID = "";
-    String catId = "";
-    String name = "";
+    database localdb;
+    RecyclerView recyclerView;
+    DatabaseReference db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_productpg);
+        setContentView(R.layout.activity_search);
 
-        cat_rec = findViewById(R.id.prod_rec);
-        back_img = findViewById(R.id.back_img);
+        localdb = new database(this);
 
-        prod_head=findViewById(R.id.prod_txt);
-        prod_num=findViewById(R.id.prodnum);
+        recyclerView = findViewById(R.id.search_rec);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        materialSearchBar = findViewById(R.id.search_bar);
+        materialSearchBar.setHint("Search Products");
+        loadSuggest();
+        loadAll();
 
-        back_img.setOnClickListener(new View.OnClickListener() {
+        materialSearchBar.addTextChangeListener(new TextWatcher() {
             @Override
-            public void onClick(View view) {
-                finish();
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                List<String> suggest = new ArrayList<String>();
+                for(String search:suggestList){
+                    if(search.toLowerCase().contains(materialSearchBar.getText().toLowerCase()))
+                        suggest.add(search);
+                }
+                materialSearchBar.setLastSuggestions(suggest);
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
             }
         });
+        materialSearchBar.setOnSearchActionListener(new MaterialSearchBar.OnSearchActionListener() {
+            @Override
+            public void onSearchStateChanged(boolean enabled) {
+                if(!enabled)
+                    recyclerView.setAdapter(searchadapter);
+            }
 
-        if(getIntent()!=null) {
-            subId = getIntent().getStringExtra("SubID");
-            catId = getIntent().getStringExtra("CategoryId");
-            name = getIntent().getStringExtra("Name");
-        }
-        if(subId != null && !subId.isEmpty()){
-            sub_rec();
-        }
-        if(catId != null && !catId.isEmpty()){
-            cat_rec();
-        }
+            @Override
+            public void onSearchConfirmed(CharSequence text) {
+                startSearch(text);
+            }
+
+            @Override
+            public void onButtonClicked(int buttonCode) {
+
+            }
+        });
     }
 
-    private void cat_rec() {
-        cat_rec.setHasFixedSize(true);
-        cat_rec.setLayoutManager(new LinearLayoutManager(this));
-        prod_head.setText("All "+name);
-
-        Query query = FirebaseDatabase.getInstance().getReference().child("Products").orderByChild("CatgID").equalTo(catId);
+    private void loadAll() {
+        Query query = FirebaseDatabase.getInstance().getReference().child("Products").orderByChild("Name");
         options = new FirebaseRecyclerOptions.Builder<prodmodel>().setQuery(query,prodmodel.class).build();
-
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
+        searchadapter = new FirebaseRecyclerAdapter<prodmodel, prodadapter>(options) {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                prod_num.setText(String.valueOf(snapshot.getChildrenCount())+" Items");
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-        adapter = new FirebaseRecyclerAdapter<prodmodel, prodadapter>(options) {
-            @Override
-            protected void onBindViewHolder(@NonNull final prodadapter holder, int position, @NonNull final prodmodel model) {
+            protected void onBindViewHolder(@NonNull prodadapter holder, int position, @NonNull final prodmodel model) {
                 holder.prodName.setText(""+model.getName());
                 holder.prodPrice.setText("₹"+model.getPrice());
                 holder.prodQuantity.setText(""+model.getQuantity());
@@ -124,7 +125,7 @@ public class productpg extends AppCompatActivity {
                 holder.add.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        bottomSheetDialog = new BottomSheetDialog(productpg.this, R.style.SheetDialog);
+                        bottomSheetDialog = new BottomSheetDialog(search.this, R.style.SheetDialog);
                         bottomSheetDialog.setContentView(R.layout.bottom_sheet);
 
                         TextView botname = bottomSheetDialog.findViewById(R.id.prod_name);
@@ -180,7 +181,7 @@ public class productpg extends AppCompatActivity {
                             public void onClick(View view) {
                                 Toast.makeText(getApplicationContext(),"Added to Cart",Toast.LENGTH_SHORT).show();
                                 new database(getBaseContext()).addtocart(new OrderModel(
-                                        foodID,
+                                        "XYZ",
                                         model.getName(),
                                         cost,
                                         model.getQuantity(),
@@ -197,7 +198,7 @@ public class productpg extends AppCompatActivity {
                         addToCart11.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                startActivity(new Intent(productpg.this,cart.class));
+                                startActivity(new Intent(search.this,cart.class));
                                 bottomSheetDialog.dismiss();
                             }
                         });
@@ -211,14 +212,6 @@ public class productpg extends AppCompatActivity {
                         bottomSheetDialog.show();
                     }
                 });
-
-                final prodmodel clickItem = model;
-                holder.setItemClickListener(new ItemClickListener() {
-                    @Override
-                    public void onClick(View view, int position, boolean isLongClick) {
-                        Toast.makeText(getApplicationContext(), ""+clickItem.getName(),Toast.LENGTH_SHORT).show();
-                    }
-                });
             }
 
             @NonNull
@@ -228,50 +221,32 @@ public class productpg extends AppCompatActivity {
                 return new prodadapter(v);
             }
         };
-        adapter.startListening();
-        cat_rec.setAdapter(adapter);
+        searchadapter.startListening();
+        recyclerView.setAdapter(searchadapter);
     }
 
-    public void sub_rec(){
-        cat_rec.setHasFixedSize(true);
-        cat_rec.setLayoutManager(new LinearLayoutManager(this));
-        prod_head.setText(name);
+    private void startSearch(CharSequence text) {
 
-        Query query = FirebaseDatabase.getInstance().getReference().child("Products").orderByChild("SubID").equalTo(subId);
+        Query query = FirebaseDatabase.getInstance().getReference().child("Products").orderByChild("Name").equalTo(text.toString());
         options = new FirebaseRecyclerOptions.Builder<prodmodel>().setQuery(query,prodmodel.class).build();
-
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                prod_num.setText(String.valueOf(snapshot.getChildrenCount())+" Items");
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-
-        adapter = new FirebaseRecyclerAdapter<prodmodel, prodadapter>(options) {
+        searchadapter = new FirebaseRecyclerAdapter<prodmodel, prodadapter>(options) {
             @Override
             protected void onBindViewHolder(@NonNull prodadapter holder, int position, @NonNull final prodmodel model) {
                 holder.prodName.setText(""+model.getName());
                 holder.prodPrice.setText("₹"+model.getPrice());
                 holder.prodQuantity.setText(""+model.getQuantity());
-                holder.prodDiscount.setText(model.getDiscount()+"% OFF");
                 if(model.getDiscount()==0){
                     holder.prodDiscount.setVisibility(View.GONE);
                     holder.prodDisc.setVisibility(View.INVISIBLE);
                 }
+                holder.prodDiscount.setText(model.getDiscount()+"% OFF");
                 Picasso.get().load(model.getImage()).into(holder.prodImage);
-                final String s = model.getMRP().toString();
+                String s = model.getMRP().toString();
                 holder.prodDisc.setText("₹"+s);
-
                 holder.add.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        bottomSheetDialog = new BottomSheetDialog(productpg.this, R.style.SheetDialog);
+                        bottomSheetDialog = new BottomSheetDialog(search.this, R.style.SheetDialog);
                         bottomSheetDialog.setContentView(R.layout.bottom_sheet);
 
                         TextView botname = bottomSheetDialog.findViewById(R.id.prod_name);
@@ -286,17 +261,17 @@ public class productpg extends AppCompatActivity {
                         final Button addToCart11 = bottomSheetDialog.findViewById(R.id.addToCart11);
 
                         botname.setText(""+model.getName());
-                        botquan.setText(""+model.getQuantity());
+                        botquan.setText("Quantity: "+model.getQuantity());
 
                         q = 1;
                         cost = model.getPrice();
                         finalCost = cost;
 
-                        botprice.setText(""+finalCost);
+                        botprice.setText("₹"+finalCost);
                         botinc.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                finalCost += cost*q;
+                                finalCost = finalCost + cost;
                                 q++;
                                 botdisplay.setText(""+q);
                                 botprice.setText("₹"+finalCost);
@@ -307,7 +282,7 @@ public class productpg extends AppCompatActivity {
                             @Override
                             public void onClick(View view) {
                                 if(q>1){
-                                    finalCost -= cost*q;
+                                    finalCost = finalCost - cost;
                                     q--;
                                     botdisplay.setText(""+q);
                                     botprice.setText("₹"+finalCost);
@@ -327,13 +302,12 @@ public class productpg extends AppCompatActivity {
                             public void onClick(View view) {
                                 Toast.makeText(getApplicationContext(),"Added to Cart",Toast.LENGTH_SHORT).show();
                                 new database(getBaseContext()).addtocart(new OrderModel(
-                                        foodID,
+                                        "XYZ",
                                         model.getName(),
                                         cost,
                                         model.getQuantity(),
                                         q,
                                         model.getImage()
-
                                 ));
                                 addToCart.setVisibility(View.GONE);
                                 contshop.setVisibility(View.GONE);
@@ -345,7 +319,7 @@ public class productpg extends AppCompatActivity {
                         addToCart11.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                startActivity(new Intent(productpg.this,cart.class));
+                                startActivity(new Intent(search.this,cart.class));
                                 bottomSheetDialog.dismiss();
                             }
                         });
@@ -359,14 +333,6 @@ public class productpg extends AppCompatActivity {
                         bottomSheetDialog.show();
                     }
                 });
-
-                final prodmodel clickItem = model;
-                holder.setItemClickListener(new ItemClickListener() {
-                    @Override
-                    public void onClick(View view, int position, boolean isLongClick) {
-                        Toast.makeText(getApplicationContext(), ""+clickItem.getName(),Toast.LENGTH_SHORT).show();
-                    }
-                });
             }
 
             @NonNull
@@ -376,7 +342,25 @@ public class productpg extends AppCompatActivity {
                 return new prodadapter(v);
             }
         };
-        adapter.startListening();
-        cat_rec.setAdapter(adapter);
+        searchadapter.startListening();
+        recyclerView.setAdapter(searchadapter);
+    }
+
+    private void loadSuggest() {
+        FirebaseDatabase.getInstance().getReference("Products").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot postsnapshot : snapshot.getChildren()){
+                    prodmodel item = postsnapshot.getValue(prodmodel.class);
+                    suggestList.add(item.getName());
+                }
+                materialSearchBar.setLastSuggestions(suggestList);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 }

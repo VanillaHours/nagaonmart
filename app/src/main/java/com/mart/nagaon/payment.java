@@ -46,6 +46,7 @@ public class payment extends AppCompatActivity implements PaymentResultListener 
     String bag = "";
     String delivery = "";
     String OrderID = "";
+    String orderDate;
 
     int res, result;
     public static final String TAG = "TAG";
@@ -67,6 +68,7 @@ public class payment extends AppCompatActivity implements PaymentResultListener 
         OrderID = ""+System.currentTimeMillis();
 
         Calendar calendar = Calendar.getInstance();
+        orderDate = DateFormat.getDateInstance(DateFormat.FULL).format(calendar.getTimeInMillis());
         calendar.add(Calendar.DAY_OF_YEAR,1);
         String exptime = DateFormat.getDateInstance(DateFormat.FULL).format(calendar.getTimeInMillis());
 
@@ -100,12 +102,14 @@ public class payment extends AppCompatActivity implements PaymentResultListener 
                 switch (radioId){
                     case R.id.cod:
                         request request = new request(
+                                OrderID,
                                 contact,
                                 name,
                                 address,
                                 ""+res,
                                 "Cash On Delivery",
-                                "Success",
+                                "Order Received",
+                                orderDate,
                                 cart
                         );
                         FirebaseDatabase.getInstance().getReference("Requests").child(OrderID)
@@ -165,12 +169,14 @@ public class payment extends AppCompatActivity implements PaymentResultListener 
     public void onPaymentSuccess(String s) {
 
         request request = new request(
+                OrderID,
                 contact,
                 name,
                 address,
                 ""+res,
-                "Pay Now",
-                "Success",
+                "Paid",
+                "Order Received",
+                orderDate,
                 cart
         );
         FirebaseDatabase.getInstance().getReference("Requests").child(OrderID)

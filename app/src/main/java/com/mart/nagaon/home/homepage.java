@@ -36,12 +36,14 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.mart.nagaon.ItemClickListener;
+import com.mart.nagaon.MyOrders;
 import com.mart.nagaon.R;
 import com.mart.nagaon.MainActivity;
 import com.mart.nagaon.cart;
 import com.mart.nagaon.categories.catgPage;
 import com.mart.nagaon.database.database;
 import com.mart.nagaon.product.productpg;
+import com.mart.nagaon.search;
 import com.smarteist.autoimageslider.SliderView;
 import com.squareup.picasso.Picasso;
 
@@ -56,7 +58,7 @@ public class homepage extends AppCompatActivity implements NavigationView.OnNavi
     static final float END_SCALE = 0.7f;
     DrawerLayout drawerLayout;
     NavigationView navigationView;
-    ImageView menu_ic;
+    ImageView menu_ic, search_ic;
     LinearLayout contentView;
 
     //firebase
@@ -93,6 +95,7 @@ public class homepage extends AppCompatActivity implements NavigationView.OnNavi
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.navigation_view);
         menu_ic = findViewById(R.id.menu);
+        search_ic = findViewById(R.id.search);
         contentView = findViewById(R.id.content);
 
         sliderView = findViewById(R.id.imageSlider);
@@ -108,6 +111,13 @@ public class homepage extends AppCompatActivity implements NavigationView.OnNavi
         load.setContentView(R.layout.loadprogress);
         load.setCancelable(false);
         load.setCanceledOnTouchOutside(false);
+
+        search_ic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext(), search.class));
+            }
+        });
 
         FirebaseDatabase.getInstance().getReference("adImages").addValueEventListener(new ValueEventListener() {
             @Override
@@ -249,6 +259,12 @@ public class homepage extends AppCompatActivity implements NavigationView.OnNavi
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
+            case R.id.nav_orders:
+                startActivity(new Intent(getApplicationContext(), MyOrders.class));
+                break;
+            case R.id.nav_search:
+                startActivity(new Intent(getApplicationContext(), search.class));
+                break;
             case R.id.nav_catg:
                 startActivity(new Intent(getApplicationContext(), catgPage.class));
                 break;

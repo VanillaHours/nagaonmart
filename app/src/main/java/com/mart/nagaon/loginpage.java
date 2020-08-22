@@ -17,12 +17,18 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.mart.nagaon.home.homepage;
 
 public class loginpage extends AppCompatActivity {
 
     TextInputLayout mail,passwd;
-    Button login,sign;
+    Button login,sign,forgot_pass;
     FirebaseAuth fauth;
 
     ProgressDialog load;
@@ -38,6 +44,7 @@ public class loginpage extends AppCompatActivity {
         sign = findViewById(R.id.signup);
         mail = findViewById(R.id.email);
         passwd = findViewById(R.id.pswd);
+        forgot_pass = findViewById(R.id.forgot_pass);
 
         login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,8 +56,8 @@ public class loginpage extends AppCompatActivity {
                 load.setCancelable(false);
                 load.setCanceledOnTouchOutside(false);
 
-                String email = mail.getEditText().getText().toString().trim();
-                String pass = passwd.getEditText().getText().toString().trim();
+                final String email = mail.getEditText().getText().toString().trim();
+                final String pass = passwd.getEditText().getText().toString().trim();
                 if(TextUtils.isEmpty(email)){
                     mail.setError("Email is Required");
                     load.dismiss();
@@ -61,6 +68,9 @@ public class loginpage extends AppCompatActivity {
                     load.dismiss();
                     return;
                 }
+                mail.setError(null);
+                passwd.setError(null);
+
                 fauth.signInWithEmailAndPassword(email,pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -88,10 +98,11 @@ public class loginpage extends AppCompatActivity {
             }
         });
 
-    }
-
-    @Override
-    public void onBackPressed() {
-        load.dismiss();
+        forgot_pass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(view.getContext(), verificationpg.class));
+            }
+        });
     }
 }

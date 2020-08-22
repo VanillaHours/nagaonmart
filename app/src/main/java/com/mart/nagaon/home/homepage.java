@@ -36,12 +36,18 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.mart.nagaon.ItemClickListener;
+import com.mart.nagaon.MyAccount;
 import com.mart.nagaon.MyOrders;
 import com.mart.nagaon.R;
 import com.mart.nagaon.MainActivity;
 import com.mart.nagaon.cart;
+import com.mart.nagaon.categories.adapter;
 import com.mart.nagaon.categories.catgPage;
+import com.mart.nagaon.categories.listadapter;
+import com.mart.nagaon.categories.listmodel;
+import com.mart.nagaon.categories.model;
 import com.mart.nagaon.database.database;
+import com.mart.nagaon.loginpage;
 import com.mart.nagaon.product.productpg;
 import com.mart.nagaon.search;
 import com.smarteist.autoimageslider.SliderView;
@@ -51,7 +57,6 @@ public class homepage extends AppCompatActivity implements NavigationView.OnNavi
 
     //homepagename
     TextView name;
-
     CounterFab btncart;
 
     //navigation
@@ -76,10 +81,13 @@ public class homepage extends AppCompatActivity implements NavigationView.OnNavi
     ImageView banner1;
 
     //recycler for categories
-    RecyclerView cat_rec;
+    RecyclerView cat_rec, sub_cat_rec;
     //cat firebase
     private FirebaseRecyclerOptions<categoryModel> options;
     private FirebaseRecyclerAdapter<categoryModel, categoryViewHolder> categoryAdapter;
+    private FirebaseRecyclerAdapter<categoryModel, adapter1> Adapter;
+    private FirebaseRecyclerOptions<categoryModel1> options1;
+    private FirebaseRecyclerAdapter<categoryModel1, categoryViewHolder1> categoryAdapter1;
 
     ProgressDialog load;
 
@@ -101,6 +109,8 @@ public class homepage extends AppCompatActivity implements NavigationView.OnNavi
         sliderView = findViewById(R.id.imageSlider);
 
         cat_rec = findViewById(R.id.cat_home);
+        sub_cat_rec = findViewById(R.id.sub_cat);
+//        sub_cat_rec.setNestedScrollingEnabled(false);
 
         banner1 = findViewById(R.id.banner1);
 
@@ -125,7 +135,7 @@ public class homepage extends AppCompatActivity implements NavigationView.OnNavi
                 Long count = snapshot.getChildrenCount();
                 imgCount = count.intValue();
 
-                sliderView.setSliderAdapter(new slideradapter(homepage.this,imgCount));
+                sliderView.setSliderAdapter(new slideradapter(homepage.this, imgCount));
                 sliderView.startAutoCycle();
             }
 
@@ -154,12 +164,14 @@ public class homepage extends AppCompatActivity implements NavigationView.OnNavi
         documentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
-                if(documentSnapshot.exists()){
+                if(e == null){
+                    if (documentSnapshot.exists()) {
 
-                    name.setText(String.format("Hi, %s", documentSnapshot.getString("name")));
+                        name.setText(String.format("Hi, %s", documentSnapshot.getString("name")));
 
-                }else {
-                    Log.d(TAG, "onEvent: Document doesn't exist ");
+                    } else {
+                        Log.d(TAG, "onEvent: Document doesn't exist ");
+                    }
                 }
             }
         });
@@ -175,6 +187,7 @@ public class homepage extends AppCompatActivity implements NavigationView.OnNavi
         btncart.setCount(new database(this).getCountCart());
 
         cat_rec();
+        subcat_rec();
         navigationDrawer();
         updateheader();
 
@@ -192,13 +205,15 @@ public class homepage extends AppCompatActivity implements NavigationView.OnNavi
         documentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
-                if(documentSnapshot.exists()){
+                if(e == null){
+                    if (documentSnapshot.exists()) {
 
-                    nav_name.setText(documentSnapshot.getString("name"));
-                    nav_mail.setText(documentSnapshot.getString("email"));
+                        nav_name.setText(documentSnapshot.getString("name"));
+                        nav_mail.setText(documentSnapshot.getString("email"));
 
-                }else {
-                    Log.d(TAG, "onEvent: Document doesn't exist ");
+                    } else {
+                        Log.d(TAG, "onEvent: Document doesn't exist ");
+                    }
                 }
             }
         });
@@ -217,9 +232,9 @@ public class homepage extends AppCompatActivity implements NavigationView.OnNavi
         menu_ic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(drawerLayout.isDrawerVisible(GravityCompat.START))
+                if (drawerLayout.isDrawerVisible(GravityCompat.START))
                     drawerLayout.closeDrawer(GravityCompat.START);
-                 else   drawerLayout.openDrawer(GravityCompat.START);
+                else drawerLayout.openDrawer(GravityCompat.START);
             }
         });
 
@@ -250,7 +265,7 @@ public class homepage extends AppCompatActivity implements NavigationView.OnNavi
 
     @Override
     public void onBackPressed() {
-        if(drawerLayout.isDrawerVisible(GravityCompat.START))
+        if (drawerLayout.isDrawerVisible(GravityCompat.START))
             drawerLayout.closeDrawer(GravityCompat.START);
         else
             super.onBackPressed();
@@ -258,7 +273,10 @@ public class homepage extends AppCompatActivity implements NavigationView.OnNavi
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
+            case R.id.nav_prof:
+                startActivity(new Intent(getApplicationContext(), MyAccount.class));
+                break;
             case R.id.nav_orders:
                 startActivity(new Intent(getApplicationContext(), MyOrders.class));
                 break;
@@ -274,18 +292,18 @@ public class homepage extends AppCompatActivity implements NavigationView.OnNavi
                 finish();
                 break;
             case R.id.nav_share:
-                Toast.makeText(this,"Share",Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Share", Toast.LENGTH_SHORT).show();
                 break;
         }
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
 
-    public void cat_rec(){
-        cat_rec.setHasFixedSize(true);
+    public void cat_rec() {
+//        cat_rec.setHasFixedSize(true);
         cat_rec.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
-        options = new FirebaseRecyclerOptions.Builder<categoryModel>().setQuery(FirebaseDatabase.getInstance().getReference().child("Category"),categoryModel.class).build();
+        options = new FirebaseRecyclerOptions.Builder<categoryModel>().setQuery(FirebaseDatabase.getInstance().getReference().child("Category"), categoryModel.class).build();
 
         categoryAdapter = new FirebaseRecyclerAdapter<categoryModel, categoryViewHolder>(options) {
             @Override
@@ -299,8 +317,8 @@ public class homepage extends AppCompatActivity implements NavigationView.OnNavi
                     @Override
                     public void onClick(View view, int position, boolean isLongClick) {
                         Intent prodpg = new Intent(homepage.this, productpg.class);
-                        prodpg.putExtra("CategoryId",categoryAdapter.getRef(position).getKey());
-                        prodpg.putExtra("Name",model.getName());
+                        prodpg.putExtra("CategoryId", categoryAdapter.getRef(position).getKey());
+                        prodpg.putExtra("Name", model.getName());
                         startActivity(prodpg);
                     }
                 });
@@ -309,7 +327,7 @@ public class homepage extends AppCompatActivity implements NavigationView.OnNavi
             @NonNull
             @Override
             public categoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.catg_card,parent,false);
+                View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.catg_card, parent, false);
                 load.dismiss();
                 return new categoryViewHolder(v);
             }
@@ -319,11 +337,105 @@ public class homepage extends AppCompatActivity implements NavigationView.OnNavi
         cat_rec.setAdapter(categoryAdapter);
     }
 
+    public void subcat_rec() {
+//        sub_cat_rec.setHasFixedSize(true);
+//        sub_cat_rec.setLayoutManager(new LinearLayoutManager(this));
+//
+//        options = new FirebaseRecyclerOptions.Builder<categoryModel>().setQuery(FirebaseDatabase.getInstance().getReference().child("SubCategories").orderByChild("CatID").equalTo("01"),categoryModel.class).build();
+//
+//        categoryAdapter = new FirebaseRecyclerAdapter<categoryModel, categoryViewHolder>(options) {
+//            @Override
+//            protected void onBindViewHolder(@NonNull categoryViewHolder holder, int position, @NonNull final categoryModel model) {
+//
+//                holder.catName.setText(model.getName());
+////                Picasso.get().load(model.getImage()).into(holder.catImage);
+//
+//                final categoryModel clickItem = model;
+//                holder.setItemClickListener(new ItemClickListener() {
+//                    @Override
+//                    public void onClick(View view, int position, boolean isLongClick) {
+//                        Intent prodpg = new Intent(homepage.this, productpg.class);
+//                        prodpg.putExtra("CategoryId",categoryAdapter.getRef(position).getKey());
+//                        prodpg.putExtra("Name",model.getName());
+//                        startActivity(prodpg);
+//                    }
+//                });
+//            }
+//
+//            @NonNull
+//            @Override
+//            public categoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+//                View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.catg_card,parent,false);
+//                load.dismiss();
+//                return new categoryViewHolder(v);
+//            }
+//        };
+//        categoryAdapter.startListening();
+//        categoryAdapter.notifyDataSetChanged();
+//        sub_cat_rec.setAdapter(categoryAdapter);
+        RecyclerView.LayoutManager manager;
+        manager = new LinearLayoutManager(this);
+        sub_cat_rec.setLayoutManager(manager);
+        load.dismiss();
+        options = new FirebaseRecyclerOptions.Builder<categoryModel>().setQuery(FirebaseDatabase.getInstance().getReference().child("Category"), categoryModel.class).build();
+        Adapter = new FirebaseRecyclerAdapter<categoryModel, adapter1>(options) {
+            @Override
+            protected void onBindViewHolder(@NonNull final adapter1 holder, int position, @NonNull categoryModel model) {
+                holder.catg_name.setText(model.getName());
+
+                FirebaseRecyclerOptions<listmodel> listoptions;
+                FirebaseRecyclerAdapter<listmodel, categoryViewHolder> listAdapter;
+
+                listoptions = new FirebaseRecyclerOptions.Builder<listmodel>().setQuery(FirebaseDatabase.getInstance().getReference().child("SubCategories").orderByChild("CatID").equalTo(categoryAdapter.getRef(position).getKey()), listmodel.class).build();
+
+                listAdapter = new FirebaseRecyclerAdapter<listmodel, categoryViewHolder>(listoptions) {
+                    @Override
+                    protected void onBindViewHolder(@NonNull final categoryViewHolder holder, int position, @NonNull final listmodel model) {
+                        holder.catName.setText(model.getName());
+                        Picasso.get().load(model.getImage()).into(holder.catImage);
+
+                        final listmodel clickItem = model;
+                        holder.setItemClickListener(new ItemClickListener() {
+                            @Override
+                            public void onClick(View view, int position, boolean isLongClick) {
+                                Intent prodpg = new Intent(homepage.this, productpg.class);
+                                prodpg.putExtra("SubID", model.getSubID());
+                                prodpg.putExtra("Name", model.getName());
+                                startActivity(prodpg);
+//                                Toast.makeText(catgPage.this,""+clickItem.getName(),Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+
+                    @NonNull
+                    @Override
+                    public categoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                        View view2 = LayoutInflater.from(getBaseContext()).inflate(R.layout.subcatg_reccard, parent, false);
+                        return new categoryViewHolder(view2);
+                    }
+                };
+                listAdapter.startListening();
+                listAdapter.notifyDataSetChanged();
+                holder.recyclerView.setAdapter(listAdapter);
+            }
+
+            @NonNull
+            @Override
+            public adapter1 onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View view1 = LayoutInflater.from(parent.getContext()).inflate(R.layout.subcatg_card, parent, false);
+                return new adapter1(view1);
+            }
+        };
+        Adapter.startListening();
+        Adapter.notifyDataSetChanged();
+        sub_cat_rec.setAdapter(Adapter);
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
         btncart.setCount(new database(this).getCountCart());
-        if(categoryAdapter!=null){
+        if (categoryAdapter != null) {
             categoryAdapter.startListening();
             categoryAdapter.notifyDataSetChanged();
         }

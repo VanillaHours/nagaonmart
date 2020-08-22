@@ -12,7 +12,7 @@ import com.mart.nagaon.home.homepage;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static int SPLASH_TIMEOUT = 0;
+    private static int SPLASH_TIMEOUT = 3500;
     FirebaseAuth fauth;
 
     @Override

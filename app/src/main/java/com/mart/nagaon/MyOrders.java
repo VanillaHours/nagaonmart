@@ -2,10 +2,13 @@ package com.mart.nagaon;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.TargetApi;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -33,6 +36,7 @@ import com.mart.nagaon.product.prodadapter;
 import com.mart.nagaon.product.prodmodel;
 
 import java.lang.ref.Reference;
+import java.util.Collections;
 
 public class MyOrders extends AppCompatActivity {
 
@@ -68,12 +72,12 @@ public class MyOrders extends AppCompatActivity {
         documentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
-                if(documentSnapshot.exists()){
+                if (documentSnapshot.exists()) {
 
                     contact = documentSnapshot.getString("contact");
                     loadorders(contact);
 
-                }else {
+                } else {
                 }
             }
         });
@@ -85,8 +89,11 @@ public class MyOrders extends AppCompatActivity {
 
     private void loadorders(String contact) {
 
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setReverseLayout(true);
+        linearLayoutManager.setStackFromEnd(true);
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setLayoutManager(linearLayoutManager);
 
         Query query = ref.orderByChild("phone").equalTo(contact);
         options = new FirebaseRecyclerOptions.Builder<request>().setQuery(query, request.class).build();
@@ -98,24 +105,40 @@ public class MyOrders extends AppCompatActivity {
                 holder.orderstatus.setText(model.getStatus());
                 holder.date.setText(model.getOrderDate());
                 holder.paymentstatus.setText(model.getPaymentMethod());
-                holder.totalprice.setText("₹"+model.getTotal());
+                holder.totalprice.setText("₹" + model.getTotal());
 
                 holder.ordercancel.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if(!holder.orderstatus.getText().equals("Order Received"))
-                            Toast.makeText(getApplicationContext(),"Cannot cancel this order. \n Order has already been processed",Toast.LENGTH_SHORT).show();
-                        else {
-                            cancelOrder(adapter.getRef(position).getKey());
-                        }
 
+                        new AlertDialog.Builder(MyOrders.this)
+                                .setTitle("Cancel Order")
+                                .setMessage("Do you want to cancel this order?")
+                                .setPositiveButton("YES",
+                                        new DialogInterface.OnClickListener() {
+                                            @TargetApi(11)
+                                            public void onClick(DialogInterface dialog, int id) {
+                                                if (!holder.orderstatus.getText().equals("Order Received"))
+                                                    Toast.makeText(getApplicationContext(), "Cannot cancel this order. \n Order has already been processed", Toast.LENGTH_SHORT).show();
+                                                else {
+                                                    cancelOrder(adapter.getRef(position).getKey());
+                                                }
+                                                dialog.cancel();
+                                            }
+                                        })
+                                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                                    @TargetApi(11)
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.cancel();
+                                    }
+                                }).show();
                     }
                 });
                 holder.viewOrder.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         Intent cart_del = new Intent(MyOrders.this, ViewOrder.class);
-                        cart_del.putExtra("orderID",adapter.getRef(position).getKey());
+                        cart_del.putExtra("orderID", adapter.getRef(position).getKey());
                         startActivity(cart_del);
                     }
                 });
@@ -136,12 +159,12 @@ public class MyOrders extends AppCompatActivity {
         ref.child(key).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                Toast.makeText(getApplicationContext(),new StringBuilder("Order ").append(key).append("has been cancelled.").toString(),Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), new StringBuilder("Order ").append(key).append("has been cancelled.").toString(), Toast.LENGTH_SHORT).show();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

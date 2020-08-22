@@ -3,6 +3,7 @@ package com.mart.nagaon.categories;
 public class listmodel {
     private String Name;
     private String SubID;
+    private String Image;
 
     public String getName() {
         return Name;
@@ -20,9 +21,18 @@ public class listmodel {
         SubID = subID;
     }
 
-    public listmodel(String name, String subID) {
+    public String getImage() {
+        return Image;
+    }
+
+    public void setImage(String image) {
+        Image = image;
+    }
+
+    public listmodel(String name, String subID, String image) {
         Name = name;
         SubID = subID;
+        Image = image;
     }
 
     public listmodel() {

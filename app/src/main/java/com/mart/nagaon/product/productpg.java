@@ -296,7 +296,7 @@ public class productpg extends AppCompatActivity {
                         botinc.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                finalCost += cost*q;
+                                finalCost = finalCost + cost;
                                 q++;
                                 botdisplay.setText(""+q);
                                 botprice.setText("₹"+finalCost);
@@ -307,7 +307,7 @@ public class productpg extends AppCompatActivity {
                             @Override
                             public void onClick(View view) {
                                 if(q>1){
-                                    finalCost -= cost*q;
+                                    finalCost = finalCost - cost;
                                     q--;
                                     botdisplay.setText(""+q);
                                     botprice.setText("₹"+finalCost);
@@ -364,7 +364,7 @@ public class productpg extends AppCompatActivity {
                 holder.setItemClickListener(new ItemClickListener() {
                     @Override
                     public void onClick(View view, int position, boolean isLongClick) {
-                        Toast.makeText(getApplicationContext(), ""+clickItem.getName(),Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getApplicationContext(), ""+clickItem.getName(),Toast.LENGTH_SHORT).show();
                     }
                 });
             }

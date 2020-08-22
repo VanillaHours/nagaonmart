@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -46,7 +47,6 @@ public class search extends AppCompatActivity {
     TextView botdisplay, botprice;
     int q, cost, finalCost;
 
-    database localdb;
     RecyclerView recyclerView;
     DatabaseReference db;
 
@@ -54,8 +54,6 @@ public class search extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
-
-        localdb = new database(this);
 
         recyclerView = findViewById(R.id.search_rec);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -100,7 +98,6 @@ public class search extends AppCompatActivity {
 
             @Override
             public void onButtonClicked(int buttonCode) {
-
             }
         });
     }

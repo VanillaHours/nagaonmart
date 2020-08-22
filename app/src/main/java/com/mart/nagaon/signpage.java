@@ -72,6 +72,11 @@ public class signpage extends AppCompatActivity {
                     load.dismiss();
                     return;
                 }
+                if(TextUtils.isEmpty(regname)){
+                    email_r.setError("Name is Required");
+                    load.dismiss();
+                    return;
+                }
                 if (TextUtils.isEmpty(pass)){
                     pass_r.setError("Password is Required");
                     load.dismiss();
@@ -93,6 +98,7 @@ public class signpage extends AppCompatActivity {
                     return;
                 }
 
+
                 fauth.createUserWithEmailAndPassword(email,pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -104,6 +110,7 @@ public class signpage extends AppCompatActivity {
                             user.put("name",regname);
                             user.put("email",email);
                             user.put("contact",phone);
+                            user.put("address","N/A");
                             documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {

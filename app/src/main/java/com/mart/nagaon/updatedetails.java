@@ -21,6 +21,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.mart.nagaon.home.homepage;
@@ -77,7 +82,7 @@ public class updatedetails extends AppCompatActivity {
                 load.setCancelable(false);
 
                 final String s_address = addressView.getEditText().getText().toString().trim();
-                final String s_phone = contactView.getEditText().getText().toString().trim();
+                final String s_email = emailView.getEditText().getText().toString().trim();
                 final String s_regname = nameView.getEditText().getText().toString().trim();
 
                 if (TextUtils.isEmpty(s_regname)) {
@@ -85,37 +90,24 @@ public class updatedetails extends AppCompatActivity {
                     load.dismiss();
                     return;
                 }
-                if (TextUtils.isEmpty(s_phone)) {
-                    contactView.setError("Contact Number is Required");
-                    load.dismiss();
-                    return;
-                }
-                if (s_phone.length() != 10) {
-                    contactView.setError("Invalid Mobile Number");
+                if (TextUtils.isEmpty(s_email)) {
+                    contactView.setError("Email is Required");
                     load.dismiss();
                     return;
                 }
 
                 String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                DocumentReference documentReference = FirebaseFirestore.getInstance().collection("users").document(userID);
-                Map<String, Object> user = new HashMap<>();
-                user.put("name", s_regname);
-                user.put("email", email);
-                user.put("contact", s_phone);
-                user.put("address", s_address);
-                documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Toast.makeText(getApplicationContext(), "User Profile Updated", Toast.LENGTH_SHORT).show();
-                        load.dismiss();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getApplicationContext(), "Failed to Update Data" + e.getMessage(), Toast.LENGTH_SHORT).show();
-                        load.dismiss();
-                    }
-                });
+
+                userModel userModel = new userModel(
+                        userID,
+                        s_regname,
+                        contact,
+                        s_email,
+                        s_address);
+
+                FirebaseDatabase.getInstance().getReference("users").child(userID).setValue(userModel);
+                load.dismiss();
+                Toast.makeText(updatedetails.this, "Details Updated Successfully", Toast.LENGTH_SHORT).show();
             }
         });
     }

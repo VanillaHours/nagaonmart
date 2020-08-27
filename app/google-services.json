@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "335136511220-2rvbcckqqa024g60lrqe7hbmjp49sfqp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mart.nagaon",
+            "certificate_hash": "cffd4c18a077a5a482c5a00e33bbf67255839eec"
+          }
+        },
+        {
           "client_id": "335136511220-ju5vhbja4mv1vmuhlgcqcdnst33ugb83.apps.googleusercontent.com",
           "client_type": 3
         }

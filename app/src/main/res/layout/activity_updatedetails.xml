@@ -88,9 +88,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/antic"
-                android:inputType="textEmailAddress"
-                android:enabled="false"
-                android:textColor="@android:color/black"/>
+                android:inputType="textEmailAddress"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -105,7 +103,9 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:enabled="false"
                 android:fontFamily="@font/antic"
+                android:textColor="@android:color/black"
                 android:inputType="phone" />
         </com.google.android.material.textfield.TextInputLayout>
 

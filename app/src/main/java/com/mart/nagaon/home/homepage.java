@@ -9,10 +9,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
+import android.content.ClipData;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +31,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
@@ -50,6 +54,8 @@ import com.mart.nagaon.database.database;
 import com.mart.nagaon.loginpage;
 import com.mart.nagaon.product.productpg;
 import com.mart.nagaon.search;
+import com.mart.nagaon.search2;
+import com.mart.nagaon.userModel;
 import com.smarteist.autoimageslider.SliderView;
 import com.squareup.picasso.Picasso;
 
@@ -57,6 +63,7 @@ public class homepage extends AppCompatActivity implements NavigationView.OnNavi
 
     //homepagename
     TextView name;
+    String phone;
     CounterFab btncart;
 
     //navigation
@@ -98,7 +105,11 @@ public class homepage extends AppCompatActivity implements NavigationView.OnNavi
 
         fauth = FirebaseAuth.getInstance();
         fstore = FirebaseFirestore.getInstance();
-        userId = fauth.getCurrentUser().getUid();
+        if(getIntent() != null)
+            phone = getIntent().getStringExtra("phone");
+        if (fauth.getCurrentUser() != null) {
+            userId = fauth.getCurrentUser().getUid();
+        }
 
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.navigation_view);
@@ -125,7 +136,7 @@ public class homepage extends AppCompatActivity implements NavigationView.OnNavi
         search_ic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getApplicationContext(), search.class));
+                startActivity(new Intent(getApplicationContext(), search2.class));
             }
         });
 
@@ -160,21 +171,37 @@ public class homepage extends AppCompatActivity implements NavigationView.OnNavi
 
         name = findViewById(R.id.name);
 
-        DocumentReference documentReference = fstore.collection("users").document(userId);
-        documentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
-                if(e == null){
-                    if (documentSnapshot.exists()) {
-
-                        name.setText(String.format("Hi, %s", documentSnapshot.getString("name")));
-
-                    } else {
-                        Log.d(TAG, "onEvent: Document doesn't exist ");
+        if (userId != null) {
+            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userId);
+            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if(snapshot.exists()){
+                        name.setText(String.format("Hi, %s", snapshot.getValue(userModel.class).getName()));
                     }
                 }
-            }
-        });
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+//            DocumentReference documentReference = fstore.collection("users").document(userId);
+//            documentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
+//                @Override
+//                public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+//                    if (e == null) {
+//                        if (documentSnapshot.exists()) {
+//
+//                            name.setText(String.format("Hi, %s", documentSnapshot.getString("name")));
+//
+//                        } else {
+//                            Log.d(TAG, "onEvent: Document doesn't exist ");
+//                        }
+//                    }
+//                }
+//            });
+        }
 
 
         btncart.setOnClickListener(new View.OnClickListener() {
@@ -196,28 +223,41 @@ public class homepage extends AppCompatActivity implements NavigationView.OnNavi
     private void updateheader() {
 
         NavigationView navigationView = findViewById(R.id.navigation_view);
+        Menu nav_menu = navigationView.getMenu();
+        if(userId == null){
+            nav_menu.findItem(R.id.nav_orders).setVisible(false);
+            nav_menu.findItem(R.id.nav_prof).setVisible(false);
+            nav_menu.findItem(R.id.nav_logout).setVisible(false);
+        }else
+            nav_menu.findItem(R.id.nav_login).setVisible(false);
+
         View headerview = navigationView.getHeaderView(0);
 
         final TextView nav_name = headerview.findViewById(R.id.menu_name);
         final TextView nav_mail = headerview.findViewById(R.id.menu_mail);
+        final TextView nav_logSign = headerview.findViewById(R.id.logSign);
 
-        DocumentReference documentReference = fstore.collection("users").document(userId);
-        documentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
-                if(e == null){
-                    if (documentSnapshot.exists()) {
+        if (userId != null) {
 
-                        nav_name.setText(documentSnapshot.getString("name"));
-                        nav_mail.setText(documentSnapshot.getString("email"));
-
-                    } else {
-                        Log.d(TAG, "onEvent: Document doesn't exist ");
+            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userId);
+            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if(snapshot.exists()){
+                        nav_name.setText(snapshot.getValue(userModel.class).getName());
+                        nav_mail.setText(snapshot.getValue(userModel.class).getPhone());
+                        nav_mail.setVisibility(View.VISIBLE);
+                        nav_name.setVisibility(View.VISIBLE);
+                        nav_logSign.setVisibility(View.GONE);
                     }
                 }
-            }
-        });
 
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }
         // Or use this
         //nav_mail.setText(fauth.getCurrentUser().getEmail());
         //nav_name.setText(fauth.getCurrentUser().getDisplayName());
@@ -274,6 +314,26 @@ public class homepage extends AppCompatActivity implements NavigationView.OnNavi
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.nav_rate:
+
+                Uri uri = Uri.parse("https://play.google.com/store/apps/details?id="+getApplicationContext().getPackageName());
+                Toast.makeText(getApplicationContext(),""+uri,Toast.LENGTH_SHORT).show();
+                Intent i = new Intent(Intent.ACTION_VIEW,uri);
+                try {
+//                    startActivity(new Intent(Intent.ACTION_VIEW,Uri.parse("market://details?id="+getApplicationContext().getPackageName())));
+                    startActivity(i);
+                }catch (Exception e){
+                    Toast.makeText(getApplicationContext(),"Unable to open \n"+e.getMessage(),Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case R.id.nav_login:
+                startActivity(new Intent(getApplicationContext(),loginpage.class));
+                break;
+            case R.id.nav_logout:
+                fauth.signOut();
+                startActivity(new Intent(getApplicationContext(),MainActivity.class));
+                finish();
+                break;
             case R.id.nav_prof:
                 startActivity(new Intent(getApplicationContext(), MyAccount.class));
                 break;
@@ -281,18 +341,19 @@ public class homepage extends AppCompatActivity implements NavigationView.OnNavi
                 startActivity(new Intent(getApplicationContext(), MyOrders.class));
                 break;
             case R.id.nav_search:
-                startActivity(new Intent(getApplicationContext(), search.class));
+                startActivity(new Intent(getApplicationContext(), search2.class));
                 break;
             case R.id.nav_catg:
                 startActivity(new Intent(getApplicationContext(), catgPage.class));
                 break;
-            case R.id.nav_logout:
-                fauth.signOut();
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                finish();
-                break;
             case R.id.nav_share:
-                Toast.makeText(this, "Share", Toast.LENGTH_SHORT).show();
+                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                shareIntent.setType("text/plain");
+                String sharebody = "Download Nagaon Mart (LINK)";
+                String sharesub = "Nagaon Mart";
+                shareIntent.putExtra(Intent.EXTRA_SUBJECT,sharesub);
+                shareIntent.putExtra(Intent.EXTRA_TEXT,sharebody);
+                startActivity(Intent.createChooser(shareIntent,"Share Using "));
                 break;
         }
         drawerLayout.closeDrawer(GravityCompat.START);
@@ -382,6 +443,13 @@ public class homepage extends AppCompatActivity implements NavigationView.OnNavi
             @Override
             protected void onBindViewHolder(@NonNull final adapter1 holder, int position, @NonNull categoryModel model) {
                 holder.catg_name.setText(model.getName());
+
+                holder.setItemClickListener(new ItemClickListener() {
+                    @Override
+                    public void onClick(View view, int position, boolean isLongClick) {
+
+                    }
+                });
 
                 FirebaseRecyclerOptions<listmodel> listoptions;
                 FirebaseRecyclerAdapter<listmodel, categoryViewHolder> listAdapter;

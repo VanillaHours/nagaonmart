@@ -48,7 +48,7 @@ public class productpg extends AppCompatActivity {
     private FirebaseRecyclerOptions<prodmodel> options;
     private FirebaseRecyclerAdapter<prodmodel, prodadapter> adapter;
 
-    TextView prod_head,prod_num;
+    TextView prod_head, prod_num;
     ImageView back_img;
 
     String subId = "";
@@ -64,8 +64,8 @@ public class productpg extends AppCompatActivity {
         cat_rec = findViewById(R.id.prod_rec);
         back_img = findViewById(R.id.back_img);
 
-        prod_head=findViewById(R.id.prod_txt);
-        prod_num=findViewById(R.id.prodnum);
+        prod_head = findViewById(R.id.prod_txt);
+        prod_num = findViewById(R.id.prodnum);
 
         back_img.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,15 +74,15 @@ public class productpg extends AppCompatActivity {
             }
         });
 
-        if(getIntent()!=null) {
+        if (getIntent() != null) {
             subId = getIntent().getStringExtra("SubID");
             catId = getIntent().getStringExtra("CategoryId");
             name = getIntent().getStringExtra("Name");
         }
-        if(subId != null && !subId.isEmpty()){
+        if (subId != null && !subId.isEmpty()) {
             sub_rec();
         }
-        if(catId != null && !catId.isEmpty()){
+        if (catId != null && !catId.isEmpty()) {
             cat_rec();
         }
     }
@@ -90,15 +90,15 @@ public class productpg extends AppCompatActivity {
     private void cat_rec() {
         cat_rec.setHasFixedSize(true);
         cat_rec.setLayoutManager(new LinearLayoutManager(this));
-        prod_head.setText("All "+name);
+        prod_head.setText("All " + name);
 
         Query query = FirebaseDatabase.getInstance().getReference().child("Products").orderByChild("CatgID").equalTo(catId);
-        options = new FirebaseRecyclerOptions.Builder<prodmodel>().setQuery(query,prodmodel.class).build();
+        options = new FirebaseRecyclerOptions.Builder<prodmodel>().setQuery(query, prodmodel.class).build();
 
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                prod_num.setText(String.valueOf(snapshot.getChildrenCount())+" Items");
+                prod_num.setText(snapshot.getChildrenCount() + " Items");
             }
 
             @Override
@@ -110,17 +110,17 @@ public class productpg extends AppCompatActivity {
         adapter = new FirebaseRecyclerAdapter<prodmodel, prodadapter>(options) {
             @Override
             protected void onBindViewHolder(@NonNull final prodadapter holder, int position, @NonNull final prodmodel model) {
-                holder.prodName.setText(""+model.getName());
-                holder.prodPrice.setText("₹"+model.getPrice());
-                holder.prodQuantity.setText(""+model.getQuantity());
-                if(model.getDiscount()==0){
+                holder.prodName.setText("" + model.getName());
+                holder.prodPrice.setText("₹" + model.getPrice());
+                holder.prodQuantity.setText("" + model.getQuantity());
+                if (model.getDiscount() == 0) {
                     holder.prodDiscount.setVisibility(View.GONE);
                     holder.prodDisc.setVisibility(View.INVISIBLE);
                 }
-                holder.prodDiscount.setText(model.getDiscount()+"% OFF");
+                holder.prodDiscount.setText(model.getDiscount() + "% OFF");
                 Picasso.get().load(model.getImage()).into(holder.prodImage);
                 String s = model.getMRP().toString();
-                holder.prodDisc.setText("₹"+s);
+                holder.prodDisc.setText("₹" + s);
                 holder.add.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -138,32 +138,36 @@ public class productpg extends AppCompatActivity {
                         final Button addToCart = bottomSheetDialog.findViewById(R.id.addToCart);
                         final Button addToCart11 = bottomSheetDialog.findViewById(R.id.addToCart11);
 
-                        botname.setText(""+model.getName());
-                        botquan.setText("Quantity: "+model.getQuantity());
+                        botname.setText("" + model.getName());
+                        botquan.setText("Quantity: " + model.getQuantity());
 
                         q = 1;
                         cost = model.getPrice();
                         finalCost = cost;
 
-                        botprice.setText("₹"+finalCost);
+                        botprice.setText("₹" + finalCost);
                         botinc.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                finalCost = finalCost + cost;
-                                q++;
-                                botdisplay.setText(""+q);
-                                botprice.setText("₹"+finalCost);
+                                if (q < 5) {
+                                    finalCost = finalCost + cost;
+                                    q++;
+                                    botdisplay.setText("" + q);
+                                    botprice.setText("₹" + finalCost);
+                                }else {
+                                    Toast.makeText(getApplicationContext(),"Sorry, Can't Add More Items",Toast.LENGTH_SHORT).show();
+                                }
                             }
                         });
 
                         botdec.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                if(q>1){
+                                if (q > 1) {
                                     finalCost = finalCost - cost;
                                     q--;
-                                    botdisplay.setText(""+q);
-                                    botprice.setText("₹"+finalCost);
+                                    botdisplay.setText("" + q);
+                                    botprice.setText("₹" + finalCost);
                                 }
                             }
                         });
@@ -178,7 +182,7 @@ public class productpg extends AppCompatActivity {
                         addToCart.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                Toast.makeText(getApplicationContext(),"Added to Cart",Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), "Added to Cart", Toast.LENGTH_SHORT).show();
                                 new database(getBaseContext()).addtocart(new OrderModel(
                                         foodID,
                                         model.getName(),
@@ -197,7 +201,7 @@ public class productpg extends AppCompatActivity {
                         addToCart11.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                startActivity(new Intent(productpg.this,cart.class));
+                                startActivity(new Intent(productpg.this, cart.class));
                                 bottomSheetDialog.dismiss();
                             }
                         });
@@ -216,7 +220,7 @@ public class productpg extends AppCompatActivity {
                 holder.setItemClickListener(new ItemClickListener() {
                     @Override
                     public void onClick(View view, int position, boolean isLongClick) {
-                        Toast.makeText(getApplicationContext(), ""+clickItem.getName(),Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "" + clickItem.getName(), Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -224,7 +228,7 @@ public class productpg extends AppCompatActivity {
             @NonNull
             @Override
             public prodadapter onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.prodpage_card,parent,false);
+                View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.prodpage_card, parent, false);
                 return new prodadapter(v);
             }
         };
@@ -232,18 +236,18 @@ public class productpg extends AppCompatActivity {
         cat_rec.setAdapter(adapter);
     }
 
-    public void sub_rec(){
+    public void sub_rec() {
         cat_rec.setHasFixedSize(true);
         cat_rec.setLayoutManager(new LinearLayoutManager(this));
         prod_head.setText(name);
 
         Query query = FirebaseDatabase.getInstance().getReference().child("Products").orderByChild("SubID").equalTo(subId);
-        options = new FirebaseRecyclerOptions.Builder<prodmodel>().setQuery(query,prodmodel.class).build();
+        options = new FirebaseRecyclerOptions.Builder<prodmodel>().setQuery(query, prodmodel.class).build();
 
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                prod_num.setText(String.valueOf(snapshot.getChildrenCount())+" Items");
+                prod_num.setText(snapshot.getChildrenCount() + " Items");
             }
 
             @Override
@@ -256,17 +260,17 @@ public class productpg extends AppCompatActivity {
         adapter = new FirebaseRecyclerAdapter<prodmodel, prodadapter>(options) {
             @Override
             protected void onBindViewHolder(@NonNull prodadapter holder, int position, @NonNull final prodmodel model) {
-                holder.prodName.setText(""+model.getName());
-                holder.prodPrice.setText("₹"+model.getPrice());
-                holder.prodQuantity.setText(""+model.getQuantity());
-                holder.prodDiscount.setText(model.getDiscount()+"% OFF");
-                if(model.getDiscount()==0){
+                holder.prodName.setText("" + model.getName());
+                holder.prodPrice.setText("₹" + model.getPrice());
+                holder.prodQuantity.setText("" + model.getQuantity());
+                holder.prodDiscount.setText(model.getDiscount() + "% OFF");
+                if (model.getDiscount() == 0) {
                     holder.prodDiscount.setVisibility(View.GONE);
                     holder.prodDisc.setVisibility(View.INVISIBLE);
                 }
                 Picasso.get().load(model.getImage()).into(holder.prodImage);
                 final String s = model.getMRP().toString();
-                holder.prodDisc.setText("₹"+s);
+                holder.prodDisc.setText("₹" + s);
 
                 holder.add.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -285,32 +289,36 @@ public class productpg extends AppCompatActivity {
                         final Button addToCart = bottomSheetDialog.findViewById(R.id.addToCart);
                         final Button addToCart11 = bottomSheetDialog.findViewById(R.id.addToCart11);
 
-                        botname.setText(""+model.getName());
-                        botquan.setText(""+model.getQuantity());
+                        botname.setText("" + model.getName());
+                        botquan.setText("" + model.getQuantity());
 
                         q = 1;
                         cost = model.getPrice();
                         finalCost = cost;
 
-                        botprice.setText(""+finalCost);
+                        botprice.setText("" + finalCost);
                         botinc.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                finalCost = finalCost + cost;
-                                q++;
-                                botdisplay.setText(""+q);
-                                botprice.setText("₹"+finalCost);
+                                if (q < 5) {
+                                    finalCost = finalCost + cost;
+                                    q++;
+                                    botdisplay.setText("" + q);
+                                    botprice.setText("₹" + finalCost);
+                                }else {
+                                    Toast.makeText(getApplicationContext(),"Sorry, Can't Add More Items",Toast.LENGTH_SHORT).show();
+                                }
                             }
                         });
 
                         botdec.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                if(q>1){
+                                if (q > 1) {
                                     finalCost = finalCost - cost;
                                     q--;
-                                    botdisplay.setText(""+q);
-                                    botprice.setText("₹"+finalCost);
+                                    botdisplay.setText("" + q);
+                                    botprice.setText("₹" + finalCost);
                                 }
                             }
                         });
@@ -325,7 +333,7 @@ public class productpg extends AppCompatActivity {
                         addToCart.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                Toast.makeText(getApplicationContext(),"Added to Cart",Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), "Added to Cart", Toast.LENGTH_SHORT).show();
                                 new database(getBaseContext()).addtocart(new OrderModel(
                                         foodID,
                                         model.getName(),
@@ -345,7 +353,7 @@ public class productpg extends AppCompatActivity {
                         addToCart11.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                startActivity(new Intent(productpg.this,cart.class));
+                                startActivity(new Intent(productpg.this, cart.class));
                                 bottomSheetDialog.dismiss();
                             }
                         });
@@ -372,7 +380,7 @@ public class productpg extends AppCompatActivity {
             @NonNull
             @Override
             public prodadapter onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.prodpage_card,parent,false);
+                View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.prodpage_card, parent, false);
                 return new prodadapter(v);
             }
         };

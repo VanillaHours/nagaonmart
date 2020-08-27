@@ -46,6 +46,7 @@ public class search extends AppCompatActivity {
     BottomSheetDialog bottomSheetDialog;
     TextView botdisplay, botprice;
     int q, cost, finalCost;
+    ImageView back;
 
     RecyclerView recyclerView;
     DatabaseReference db;
@@ -55,6 +56,7 @@ public class search extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
+        back = findViewById(R.id.cat_back);
         recyclerView = findViewById(R.id.search_rec);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         materialSearchBar = findViewById(R.id.search_bar);
@@ -62,6 +64,12 @@ public class search extends AppCompatActivity {
         loadSuggest();
         loadAll();
 
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                search.super.onBackPressed();
+            }
+        });
         materialSearchBar.addTextChangeListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -209,6 +217,14 @@ public class search extends AppCompatActivity {
                         bottomSheetDialog.show();
                     }
                 });
+
+                final prodmodel clickItem = model;
+                holder.setItemClickListener(new ItemClickListener() {
+                    @Override
+                    public void onClick(View view, int position, boolean isLongClick) {
+//                        Toast.makeText(getApplicationContext(), ""+clickItem.getName(),Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
 
             @NonNull
@@ -328,6 +344,14 @@ public class search extends AppCompatActivity {
                         });
 
                         bottomSheetDialog.show();
+                    }
+                });
+
+                final prodmodel clickItem = model;
+                holder.setItemClickListener(new ItemClickListener() {
+                    @Override
+                    public void onClick(View view, int position, boolean isLongClick) {
+//                        Toast.makeText(getApplicationContext(), ""+clickItem.getName(),Toast.LENGTH_SHORT).show();
                     }
                 });
             }

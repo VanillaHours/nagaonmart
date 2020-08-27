@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -134,11 +135,13 @@ public class cart extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                Intent cart_del = new Intent(cart.this, Address.class);
-                cart_del.putExtra("bagtotal",""+total);
-                cart_del.putExtra("delivery",""+intVal);
-                startActivity(cart_del);
-
+                if(FirebaseAuth.getInstance().getCurrentUser() != null) {
+                    Intent cart_del = new Intent(cart.this, Address.class);
+                    cart_del.putExtra("bagtotal", "" + total);
+                    cart_del.putExtra("delivery", "" + intVal);
+                    startActivity(cart_del);
+                }else
+                    startActivity(new Intent(getApplicationContext(),loginpage.class));
 //                request request = new request(
 //                        contact,
 //                        name,

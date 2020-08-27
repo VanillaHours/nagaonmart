@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
-    tools:context=".home.homepage">
+    tools:context=".home.homepage"
+    tools:openDrawer="start">
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigation_view"
@@ -74,7 +75,7 @@
             android:layout_marginStart="30dp"
             android:layout_marginTop="20dp"
             android:fontFamily="@font/open_sans_light"
-            android:text="Hi, User"
+            android:text="Hi,"
             android:textColor="#c2000000"
             android:textSize="14dp"
             android:textStyle="bold" />

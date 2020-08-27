@@ -1,5 +1,6 @@
 package com.mart.nagaon;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -11,6 +12,11 @@ import android.widget.ImageView;
 
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -45,21 +51,21 @@ public class Address extends AppCompatActivity {
             bag = getIntent().getStringExtra("bagtotal");
             delivery = getIntent().getStringExtra("delivery");
         }
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()){
+                    add_name.getEditText().setText(snapshot.getValue(userModel.class).getName());
+                    add_num.getEditText().setText(snapshot.getValue(userModel.class).getPhone());
+                }
+            }
 
-        FirebaseFirestore.getInstance().collection("users")
-                .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-                        if (value.exists()) {
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
 
-                            add_name.getEditText().setText(value.getString("name"));
-                            add_num.getEditText().setText(value.getString("contact"));
-
-                        } else {
-                        }
-                    }
-                });
+            }
+        });
 
         checkout.setOnClickListener(new View.OnClickListener() {
             @Override

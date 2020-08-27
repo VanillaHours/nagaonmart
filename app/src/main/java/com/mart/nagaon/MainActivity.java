@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(new Intent(getApplicationContext(), homepage.class));
                 }
                 else {
-                    startActivity(new Intent(getApplicationContext(),loginpage.class));
+                    startActivity(new Intent(getApplicationContext(),homepage.class));
                     overridePendingTransition(R.anim.left_trans2,R.anim.left_trans);
                 }
                 finish();

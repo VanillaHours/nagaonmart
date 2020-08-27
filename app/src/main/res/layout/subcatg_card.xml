@@ -4,22 +4,26 @@
     android:id="@+id/trans_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="6dp"
-    android:layout_marginBottom="6dp"
     app:cardCornerRadius="5dp"
+    android:background="@android:color/white"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
     android:orientation="vertical">
-
 
     <TextView
         android:id="@+id/catn_txt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="10dp"
-        android:layout_marginEnd="10dp"
-        android:fontFamily="@font/open_sans"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/subcatgback"
+        android:fontFamily="@font/adamina"
+        android:padding="16dp"
         android:text="Category Name"
-        android:textSize="12dp" />
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:textSize="16dp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/expanded_menu"

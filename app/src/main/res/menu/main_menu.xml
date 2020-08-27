@@ -35,10 +35,14 @@
                     android:icon="@drawable/cart_img"/>
 
                 <item
-                    android:id="@+id/nav_logout"
-                    android:title="Logout"
+                    android:id="@+id/nav_login"
+                    android:title="Login"
                     android:icon="@drawable/pswdart"/>
 
+                <item
+                    android:id="@+id/nav_logout"
+                    android:title="Log Out"
+                    android:icon="@drawable/pswdart"/>
 
             </group>
         </menu>

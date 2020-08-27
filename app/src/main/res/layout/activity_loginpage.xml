@@ -4,42 +4,39 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".loginpage"
+    android:gravity="center"
     android:orientation="vertical"
     android:padding="20dp"
-    android:gravity="center"
-    >
+    tools:context=".loginpage">
 
     <ImageView
         android:id="@+id/logo"
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:src="@drawable/logot1"
         android:layout_gravity="center"
-        android:transitionName="logoimg"
-        />
+        android:src="@drawable/logot1"
+        android:transitionName="logoimg" />
 
     <TextView
-        android:layout_marginTop="50dp"
         android:id="@+id/hello"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/amiko_bold"
-        android:text="Welcome Back"
-        android:textSize="30dp"
         android:layout_gravity="center"
-        android:transitionName="txt1"
-        />
+        android:layout_marginTop="50dp"
+        android:fontFamily="@font/amiko_bold"
+        android:text="Welcome"
+        android:textSize="30dp"
+        android:transitionName="txt1" />
 
     <TextView
         android:id="@+id/login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:fontFamily="@font/antic"
         android:text="Log In to continue"
         android:textSize="14dp"
-        android:layout_gravity="center"
-        android:transitionName="txt2"/>
+        android:transitionName="txt2" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -48,82 +45,153 @@
         android:layout_marginBottom="20dp"
         android:orientation="vertical">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="275dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:id="@+id/email"
+            android:layout_marginStart="60dp"
             android:layout_marginTop="20dp"
-            android:hint="Email Address"
-            app:startIconDrawable="@drawable/mailart"
-            app:endIconMode="clear_text"
-            android:transitionName="edt1"
-            >
-            <com.google.android.material.textfield.TextInputEditText
+            android:layout_marginEnd="60dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:enabled="false"
+                android:transitionName="edt1">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/antic"
+                    android:inputType="phone"
+                    android:text="+91"
+                    android:textAlignment="viewEnd"
+                    android:textColor="@android:color/black" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="10dp"
+                android:background="#19000000" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/phone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textEmailAddress"
-                android:fontFamily="@font/antic"/>
-        </com.google.android.material.textfield.TextInputLayout>
+                android:layout_gravity="center"
+                android:hint="Phone Number"
+                android:transitionName="edt1"
+                app:endIconMode="clear_text">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/antic"
+
+                    android:inputType="phone" />
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/otp"
             android:layout_width="275dp"
             android:layout_height="wrap_content"
-            android:id="@+id/pswd"
-            android:hint="Password"
-            app:passwordToggleEnabled="true"
-            app:startIconDrawable="@drawable/pswdart"
             android:layout_gravity="center"
-            android:transitionName="edt2">
+            android:layout_marginTop="20dp"
+            android:hint="Enter Verification Code"
+            android:transitionName="edt1"
+            android:visibility="gone"
+            app:endIconMode="clear_text"
+            app:startIconDrawable="@drawable/pswdart">
+
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:fontFamily="@font/antic"/>
+                android:fontFamily="@font/antic"
+                android:inputType="number" />
         </com.google.android.material.textfield.TextInputLayout>
-
-        <Button
-            android:id="@+id/forgot_pass"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:background="#00000000"
-            android:text="Forgot Password?"
-            android:layout_gravity="right"
-            android:elevation="0dp"
-            android:layout_marginBottom="5dp"
-            android:layout_marginTop="5dp"
-            android:textSize="12dp"
-            android:fontFamily="@font/antic"/>
 
         <Button
             android:id="@+id/log"
-            android:layout_gravity="center"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="50dp"
             android:background="#3282B8"
+            android:fontFamily="@font/antic"
             android:text="LOG IN"
             android:textColor="#fff"
             android:textSize="12dp"
-            android:fontFamily="@font/antic"
-            android:transitionName="btn1"/>
+            android:transitionName="btn1" />
 
         <Button
-            android:id="@+id/signup"
-            android:layout_width="match_parent"
+            android:id="@+id/ver"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="5dp"
-            android:background="#00000000"
-            android:elevation="0dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="50dp"
+            android:background="#3282B8"
             android:fontFamily="@font/antic"
+            android:text="Verify"
+            android:textColor="#fff"
             android:textSize="12dp"
-            android:text="New User? SIGN UP"
-            android:transitionName="btn2"/>
+            android:transitionName="btn1"
+            android:visibility="gone" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@font/antic"
+            android:text="By continuing you agree to our "
+            android:textSize="12dp" />
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/terms"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/antic"
+                android:textColor="@android:color/holo_red_dark"
+                android:text="Terms of Service"
+                android:padding="6dp"
+                android:textSize="12dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/antic"
+                android:text="and"
+                android:textSize="12dp" />
+            <TextView
+                android:id="@+id/privacy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:padding="6dp"
+                android:fontFamily="@font/antic"
+                android:textColor="@android:color/holo_red_dark"
+                android:text="Privacy and Legal Policy"
+                android:textSize="12dp" />
+        </LinearLayout>
 
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="50dp"
+            android:visibility="gone" />
     </LinearLayout>
-
 
 </LinearLayout>

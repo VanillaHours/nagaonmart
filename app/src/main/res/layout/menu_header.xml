@@ -4,46 +4,68 @@
     android:layout_height="200dp"
     android:background="#fff">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_toStartOf="@+id/navGrocImage">
+
+        <ImageView
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginBottom="15dp"
+            android:src="@drawable/logot1"
+            android:layout_centerVertical="true"
+            android:layout_above="@+id/menu_name"/>
+
+        <TextView
+            android:id="@+id/logSign"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:ellipsize="end"
+            android:fontFamily="@font/open_sans"
+            android:maxLines="2"
+            android:layout_marginBottom="10dp"
+            android:text="Login|SignUp"
+            android:textSize="18dp"
+            android:textStyle="bold"
+            android:layout_alignParentBottom="true"/>
+
+        <TextView
+            android:id="@+id/menu_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:ellipsize="end"
+            android:fontFamily="@font/open_sans"
+            android:maxLines="2"
+            android:text="FName LName"
+            android:textSize="20dp"
+            android:layout_above="@+id/menu_mail"
+            android:textStyle="bold"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/menu_mail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginBottom="10dp"
+            android:layout_alignParentBottom="true"
+            android:fontFamily="@font/open_sans"
+            android:text="email@email.com"
+            android:textSize="10dp"
+            android:visibility="gone"/>
+    </RelativeLayout>
 
 
     <ImageView
-        android:layout_width="90dp"
-        android:layout_height="90dp"
-        android:src="@drawable/logot1"
-        android:layout_marginLeft="15dp"
-        android:layout_above="@+id/menu_name"
-        android:layout_marginBottom="15dp"/>
-
-    <TextView
-        android:id="@+id/menu_name"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/menu_mail"
-        android:layout_marginLeft="15dp"
-        android:fontFamily="@font/open_sans"
-        android:textStyle="bold"
-        android:maxLines="2"
-        android:ellipsize="end"
-        android:text="FName LName"
-        android:textSize="20dp" />
-
-    <TextView
-        android:id="@+id/menu_mail"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:fontFamily="@font/open_sans"
-        android:layout_marginLeft="15dp"
-        android:layout_marginBottom="10dp"
-        android:text="email@email.com"
-        android:textSize="10dp" />
-
-
-    <ImageView
+        android:id="@+id/navGrocImage"
         android:layout_width="160dp"
         android:layout_height="175dp"
-        android:src="@drawable/groc11"
+        android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"/>
+        android:src="@drawable/groc11" />
 
 </RelativeLayout>
